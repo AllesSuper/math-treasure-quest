@@ -17,7 +17,7 @@ do not need a complex toolchain to help.
 ## Getting started
 
 ```bash
-git clone https://github.com/USERNAME/math-treasure-quest.git
+git clone https://github.com/AllesSuper/math-treasure-quest.git
 cd math-treasure-quest
 npm start      # or: python3 -m http.server 8080
 ```
