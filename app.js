@@ -1953,6 +1953,9 @@ function startApp() {
     haptic([8, 40, 8]);
     beep(180, 220, "sawtooth");
     recordMiss();
+    // Penalty: a wrong answer sends the traveller back along the path.
+    // Applied once per task (first wrong attempt) so retries don't pile up.
+    if (state.run.attemptsOnCurrent === 1) goBackOnMiss(3);
 
     // Adaptive difficulty: ease off after a mistake.
     if (state.run.diff === "adaptive") {
@@ -1976,6 +1979,20 @@ function startApp() {
     var text =
       activeTask.text.replace(/\s*=\s*$/, "") + " = " + activeTask.answer;
     if (state.run.missed.indexOf(text) === -1) state.run.missed.push(text);
+  }
+
+  // Penalty movement: a wrong or too-slow answer sends the traveller back
+  // along the path. The walker animates to the earlier station and a small
+  // toast shows the setback. Clamped so the journey never goes before start.
+  function goBackOnMiss(steps) {
+    var back = steps || 3;
+    var before = state.run.index;
+    state.run.index = clamp(state.run.index - back, 0, state.run.total);
+    if (state.run.index !== before) {
+      moveWalker(state.run.index);
+      updateMapProgressLabel();
+      showToast(String(state.run.index - before), "\u2B05\uFE0F");
+    }
   }
 
   function showHint() {
@@ -2103,8 +2120,8 @@ function startApp() {
     if (state.run.diff === "adaptive") {
       state.run.level = clamp(state.run.level - 1, MIN_LEVEL, MAX_LEVEL);
     }
-    state.run.index++;
-    moveWalker(state.run.index);
+    // Too slow on the Blitz timer: send the traveller back along the path.
+    goBackOnMiss(3);
     window.setTimeout(nextTask, 1000);
   }
   function stopTimer() {
