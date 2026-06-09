@@ -13,6 +13,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Parent dashboard with progress overview
 - Additional adventure worlds
 
+## [1.1.0] - 2026-06-09
+
+### Added
+
+- Adaptive "Blitz" timer on a subset of tasks: a visual countdown ring that
+  adds gentle time pressure. The time budget is learned from the child's own
+  answering speed (exponential moving average) and evolves run over run.
+- Multiple-choice answers: some tasks now offer 4-8 tappable answer options
+  instead of always typing, with the number of options scaling by level.
+- Combo multiplier (x1-x4) that grows with the streak and boosts coin rewards.
+- Time bonus coins for beating the Blitz timer.
+- Friendly mascot with encouraging speech bubbles on correct/wrong answers.
+- Daily bonus coins for the first run of each day.
+- End-of-run mistake review listing tasks to practise again.
+- Two new badges: Blitzrechner (speedy) and Combo-Meister (combo master).
+- Prettier adventure map: a gradient trail that fills as you progress, milestone
+  flags, glowing star stations for first-try wins, and a bobbing traveler.
+- Optional haptic feedback (vibration) on supported devices.
+- New settings to toggle Blitz tasks and multiple-choice answers.
+- Unit tests for the new choice, timing, and pacing helpers.
+
 ## [1.0.0] - 2026-06-09
 
 ### Added
@@ -38,5 +59,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Open-source project files: README, LICENSE (MIT), CONTRIBUTING, CODE OF
   CONDUCT, SECURITY, ROADMAP, issue templates, and PR template.
 
-[Unreleased]: https://github.com/AllesSuper/math-treasure-quest/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/AllesSuper/math-treasure-quest/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/AllesSuper/math-treasure-quest/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/AllesSuper/math-treasure-quest/releases/tag/v1.0.0

@@ -1,6 +1,6 @@
 {
   "name": "math-treasure-quest",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "An offline-capable, iPad-friendly math adventure PWA for 2nd-grade children. Vanilla JS, no dependencies, no tracking.",
   "keywords": [
     "education",
@@ -30,6 +30,6 @@
   "bugs": {
     "url": "https://github.com/AllesSuper/math-treasure-quest/issues"
   },
-  "homepage": "https://USERNAME.github.io/math-treasure-quest/",
+  "homepage": "https://allessuper.github.io/math-treasure-quest/",
   "private": false
 }
