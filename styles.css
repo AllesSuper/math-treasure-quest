@@ -1555,3 +1555,76 @@ h3 {
 .buddy-card.is-locked {
   opacity: 0.85;
 }
+
+/* ============================================================
+   v1.2.0 — iPhone / small-screen comfort
+   Tap-only layout: keep the map, question, answer buttons and
+   power-ups all in view without awkward scrolling, and keep the
+   power-up row clear of the home indicator.
+   ============================================================ */
+.screen--game.is-active {
+  /* Let the game scroll gracefully if a very short device ever overflows. */
+  overflow-y: auto;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@media (max-width: 540px) {
+  .app {
+    padding: 10px;
+    align-items: stretch;
+  }
+  .screen--game.is-active {
+    gap: 12px;
+  }
+  .card,
+  .task-card {
+    padding: 16px 14px;
+  }
+  .map {
+    padding: 8px 6px 4px;
+  }
+  .map svg {
+    height: clamp(78px, 16vw, 120px);
+  }
+  .task-question {
+    font-size: clamp(2rem, 11vw, 2.8rem);
+    margin: 0.05em 0;
+  }
+  .choices {
+    gap: 10px;
+    margin: 6px 0 2px;
+  }
+  .choice {
+    min-height: 62px;
+    font-size: clamp(1.5rem, 8vw, 1.9rem);
+    padding: 12px 6px;
+  }
+  .powerups {
+    gap: 8px;
+  }
+  .powerup {
+    padding: 7px 11px;
+    font-size: 1.2rem;
+  }
+  .feedback {
+    margin: 4px 0;
+  }
+  .shop-card {
+    padding: 18px 14px 22px;
+  }
+  .treasure-img {
+    width: 104px;
+    height: 104px;
+  }
+}
+
+/* Short portrait phones: trim vertical rhythm so answers stay above the fold. */
+@media (max-height: 720px) {
+  .map svg {
+    height: clamp(70px, 14vh, 110px);
+  }
+  .task-card {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+}

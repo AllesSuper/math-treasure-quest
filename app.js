@@ -2038,6 +2038,7 @@ function startApp() {
   /* ---------------- Number pad ---------------- */
   var currentInput = "";
   function buildNumpad() {
+    if (!els.numpad) return;
     var layout = [
       "1",
       "2",
@@ -2086,6 +2087,7 @@ function startApp() {
   }
 
   function renderAnswer() {
+    if (!els.answerDisplay) return;
     els.answerDisplay.textContent = currentInput === "" ? "_" : currentInput;
     els.answerDisplay.classList.remove("is-correct", "is-wrong");
   }
@@ -2353,7 +2355,7 @@ function startApp() {
     state.run.stars += firstTry ? 1 : 0;
     els.gameStreak.textContent = state.run.streak;
     els.gameCoins.textContent = state.run.coins;
-    els.answerDisplay.classList.add("is-correct");
+    if (els.answerDisplay) els.answerDisplay.classList.add("is-correct");
     els.feedback.textContent = t("feedback_correct");
     els.feedback.className = "feedback is-correct";
     showComboTag();
@@ -2385,7 +2387,7 @@ function startApp() {
     state.run.combo = 1;
     hideComboTag();
     els.gameStreak.textContent = 0;
-    els.answerDisplay.classList.add("is-wrong");
+    if (els.answerDisplay) els.answerDisplay.classList.add("is-wrong");
     els.feedback.textContent = t("feedback_wrong");
     els.feedback.className = "feedback is-wrong";
     mascotSay(pickEncourage(), "\uD83E\uDD9C");

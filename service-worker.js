@@ -5,7 +5,7 @@
  */
 
 // Bump this version whenever cached assets change to invalidate old caches.
-const CACHE_VERSION = "mathe-schatzreise-v1";
+const CACHE_VERSION = "mathe-schatzreise-v2";
 
 // All files required for the app to run fully offline.
 const PRECACHE_URLS = [
@@ -69,9 +69,15 @@ self.addEventListener("fetch", (event) => {
       return fetch(request)
         .then((response) => {
           // Cache successful same-origin responses for future offline use.
-          if (response && response.status === 200 && response.type === "basic") {
+          if (
+            response &&
+            response.status === 200 &&
+            response.type === "basic"
+          ) {
             const copy = response.clone();
-            caches.open(CACHE_VERSION).then((cache) => cache.put(request, copy));
+            caches
+              .open(CACHE_VERSION)
+              .then((cache) => cache.put(request, copy));
           }
           return response;
         })
