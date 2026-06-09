@@ -25,10 +25,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/USERNAME/math-treasure-quest.git"
+    "url": "https://github.com/AllesSuper/math-treasure-quest.git"
   },
   "bugs": {
-    "url": "https://github.com/USERNAME/math-treasure-quest/issues"
+    "url": "https://github.com/AllesSuper/math-treasure-quest/issues"
   },
   "homepage": "https://USERNAME.github.io/math-treasure-quest/",
   "private": false
