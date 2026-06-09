@@ -182,6 +182,7 @@ var I18N = {
     daily_treasure: "Schatz des Tages!",
     treasure_count: "{n} von 50 Schätzen",
     new_treasure: "Neuer Schatz! +{n} Münzen",
+    coin_treasure: "Münzen im Schatz! +{n} \uD83E\uDE99",
     next_task: "Weiter ➜",
     buy_time: "+10 Sekunden für 3 Sterne",
     time_added_10: "+10 Sekunden!",
@@ -271,6 +272,7 @@ var I18N = {
     daily_treasure: "Treasure of the day!",
     treasure_count: "{n} of 50 treasures",
     new_treasure: "New treasure! +{n} coins",
+    coin_treasure: "Coins in the treasure! +{n} \uD83E\uDE99",
     next_task: "Next ➜",
     buy_time: "+10 seconds for 3 stars",
     time_added_10: "+10 seconds!",
@@ -1213,10 +1215,10 @@ function generateSubtraction(level) {
  */
 function generateMultiplication(level) {
   level = clamp(level || 1, MIN_LEVEL, MAX_LEVEL);
-  var maxA = clamp(2 + level * 2, 1, 10);
-  var maxB = clamp(3 + level * 2, 1, 11);
-  var a = randInt(1, maxA);
-  var b = randInt(1, maxB);
+  // Cover the complete times tables at random: every fact from 1×1 up to
+  // 10×11 can appear regardless of level, so the whole 1x1 gets practised.
+  var a = randInt(1, 10);
+  var b = randInt(1, 11);
   return {
     type: "mul",
     operands: [a, b],
@@ -1755,12 +1757,17 @@ function vibrationForTask(task, level, firstTry) {
   return ms;
 }
 
+// Harder tasks grant a little more thinking time than easy ones (0..7 s).
+function extraTimeForTask(task, level) {
+  return clamp(Math.round((taskDifficultyScore(task, level) - 3) * 0.7), 0, 7);
+}
+
 // Coin shop catalog. Power-ups are consumable helpers; buddies are one-time
 // cosmetic unlocks for the traveller on the map.
 var SHOP_POWERUPS = [
   {
     id: "joker",
-    price: 40,
+    price: 10,
     icon: "🪄",
     de: "Joker",
     en: "Joker",
@@ -1769,7 +1776,7 @@ var SHOP_POWERUPS = [
   },
   {
     id: "fifty",
-    price: 20,
+    price: 6,
     icon: "✂️",
     de: "50:50",
     en: "50:50",
@@ -1778,7 +1785,7 @@ var SHOP_POWERUPS = [
   },
   {
     id: "shield",
-    price: 25,
+    price: 8,
     icon: "🛡️",
     de: "Schutzschild",
     en: "Shield",
@@ -1789,12 +1796,12 @@ var SHOP_POWERUPS = [
 
 var SHOP_BUDDIES = [
   { id: "kid", price: 0, emoji: "🧒", de: "Kind", en: "Kid" },
-  { id: "fox", price: 60, emoji: "🦊", de: "Fuchs", en: "Fox" },
-  { id: "cat", price: 80, emoji: "🐱", de: "Katze", en: "Cat" },
-  { id: "monkey", price: 90, emoji: "🐵", de: "Affe", en: "Monkey" },
-  { id: "robot", price: 120, emoji: "🤖", de: "Roboter", en: "Robot" },
-  { id: "unicorn", price: 160, emoji: "🦄", de: "Einhorn", en: "Unicorn" },
-  { id: "dragon", price: 220, emoji: "🐲", de: "Drache", en: "Dragon" },
+  { id: "fox", price: 80, emoji: "🦊", de: "Fuchs", en: "Fox" },
+  { id: "cat", price: 110, emoji: "🐱", de: "Katze", en: "Cat" },
+  { id: "monkey", price: 140, emoji: "🐵", de: "Affe", en: "Monkey" },
+  { id: "robot", price: 180, emoji: "🤖", de: "Roboter", en: "Robot" },
+  { id: "unicorn", price: 240, emoji: "🦄", de: "Einhorn", en: "Unicorn" },
+  { id: "dragon", price: 320, emoji: "🐲", de: "Drache", en: "Dragon" },
 ];
 
 function startApp() {
@@ -2133,7 +2140,7 @@ function startApp() {
     var today = new Date().toISOString().slice(0, 10);
     if (state.progress.lastPlayed !== today) {
       state.progress.lastPlayed = today;
-      var bonus = 15;
+      var bonus = 3;
       state.progress.coins += bonus;
       storageSet(STORAGE_KEYS.progress, state.progress);
       refreshMenuStats();
@@ -2339,13 +2346,19 @@ function startApp() {
       state.progress.totalCorrect = (state.progress.totalCorrect || 0) + 1;
     }
 
-    var base = firstTry ? 10 : 4;
-    var earned = (base + Math.min(state.run.streak, 10)) * state.run.combo;
+    // Modest, predictable economy: roughly one Joker per successful run, two
+    // when a strong streak is earned, and a new buddy after about 4-5 runs.
+    // Coins are only earned on first-try answers.
+    var earned = firstTry ? 1 : 0;
+    // Reward sustained, *earned* streaks with a small bonus every 5 in a row.
+    if (firstTry && state.run.streak > 0 && state.run.streak % 5 === 0) {
+      earned += 2;
+    }
 
-    // Beating the Blitz timer earns bonus coins.
+    // Beating the Blitz timer earns a single bonus coin.
     var timeBonus = 0;
     if (activeTask.timed && firstTry && state.timerRemaining > 0) {
-      timeBonus = Math.min(10, Math.ceil(state.timerRemaining));
+      timeBonus = 1;
       state.run.blitzWins++;
       state.run.timeBonus += timeBonus;
     }
@@ -2359,7 +2372,7 @@ function startApp() {
     els.feedback.textContent = t("feedback_correct");
     els.feedback.className = "feedback is-correct";
     showComboTag();
-    floatCoins(earned);
+    if (earned > 0) floatCoins(earned);
     if (timeBonus > 0)
       showToast(t("time_bonus", { n: timeBonus }), "\u23F1\uFE0F");
     mascotSay(pickPraise(), "\uD83E\uDD9C");
@@ -2574,6 +2587,12 @@ function startApp() {
       return;
     }
     var budget = computeTimeBudget(state.progress.avgMs, state.run.level);
+    // Harder tasks get a little more thinking time than easy ones.
+    budget = clamp(
+      budget + extraTimeForTask(activeTask, state.run.level),
+      6,
+      45,
+    );
     state.timerBudget = budget;
     state.timerRemaining = budget;
     if (els.timerRing) {
@@ -2792,9 +2811,12 @@ function startApp() {
     var isNew = state.progress.collection.indexOf(tr.id) === -1;
     if (isNew) {
       state.progress.collection.push(tr.id);
-      var reward = 25;
+    }
+    // A treasure can occasionally also contain a few coins (rather rare).
+    if (Math.random() < 0.18) {
+      var reward = randInt(3, 9);
       state.progress.coins += reward;
-      showToast(t("new_treasure", { n: reward }), "✨");
+      showToast(t("coin_treasure", { n: reward }), "\uD83E\uDE99");
     }
     storageSet(STORAGE_KEYS.progress, state.progress);
     if (els.treasureReveal) {
