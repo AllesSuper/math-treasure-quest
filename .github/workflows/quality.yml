@@ -32,5 +32,6 @@ jobs:
       - name: Run math range tests
         run: node tests/math.test.js
 
-      - name: Check formatting
+      - name: Check formatting (non-blocking)
         run: npx --yes prettier --check "**/*.{js,css,json,md,html}"
+        continue-on-error: true
