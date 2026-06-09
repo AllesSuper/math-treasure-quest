@@ -9,9 +9,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Planned
 
-- Sound effects and gentle background music
 - Parent dashboard with progress overview
 - Additional adventure worlds
+
+## [1.2.0] - 2026-06-09
+
+### Added
+
+- Tap-to-answer everywhere: every task now offers 4–6 multiple-choice buttons,
+  so children no longer type answers.
+- Daily treasure: after clearing a run, tapping the chest reveals one of 50
+  generated treasure gems, with a new one chosen each day.
+- Power-up tray during runs plus a coin shop (Joker, 50:50, Shield) and
+  collectible buddies that walk the map with you.
+- Stars are now a spendable currency: earn 1 star per first-try-correct answer
+  and spend 3 stars to add +10 seconds on a timed task.
+- Victory melody on finishing a run and difficulty-scaled haptic feedback
+  (vibration) where supported.
+
+### Changed
+
+- Wrong or too-slow answers now show the worked calculation path; tap it (or the
+  Continue button) to advance to the next task.
+- Sound is enabled by default so the victory melody plays out of the box.
+
+### Removed
+
+- The in-task hint button and the "answer buttons instead of typing" setting are
+  gone, since tapping answers is now the only mode.
 
 ## [1.1.0] - 2026-06-09
 

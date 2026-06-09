@@ -1,6 +1,6 @@
 {
   "name": "math-treasure-quest",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "An offline-capable, iPad-friendly math adventure PWA for 2nd-grade children. Vanilla JS, no dependencies, no tracking.",
   "keywords": [
     "education",

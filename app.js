@@ -164,7 +164,7 @@ var I18N = {
     reset_confirm: "Wirklich allen Fortschritt l\u00f6schen?",
     howto_title: "So wird gespielt",
     howto_body:
-      "Reise \u00fcber die Karte und l\u00f6se an jeder Station eine Rechenaufgabe. Tippe deine Antwort mit den gro\u00dfen Tasten ein und dr\u00fccke auf Pr\u00fcfen. Sammle Sterne, M\u00fcnzen und Abzeichen. Am Ende jeder Reise wartet eine Schatztruhe auf dich!",
+      "Reise über die Karte und löse an jeder Station eine Rechenaufgabe. Tippe die richtige Antwort aus den Knöpfen an. Liegst du daneben, zeigen wir dir den Rechenweg – tippe darauf, um weiterzugehen. Sammle Sterne, Münzen und Abzeichen. Mit Sternen kaufst du dir mehr Zeit, mit Münzen bekommst du im Laden Power-ups wie den Joker und neue Begleiter. Am Ende jeder Reise öffnest du eine Schatztruhe mit einem täglich neuen Schatz!",
     play_again: "Neue Reise",
     paused: "Pause",
     station_progress: "Station {n} von {total}",
@@ -178,6 +178,28 @@ var I18N = {
     time_bonus: "Zeit-Bonus +{n}",
     daily_bonus: "Tagesbonus +{n} Münzen!",
     timeout_msg: "Zeit um! Die nächste schaffst du.",
+    tap_chest: "Tippe auf die Truhe!",
+    daily_treasure: "Schatz des Tages!",
+    treasure_count: "{n} von 50 Schätzen",
+    new_treasure: "Neuer Schatz! +{n} Münzen",
+    next_task: "Weiter ➜",
+    buy_time: "+10 Sekunden für 3 Sterne",
+    time_added_10: "+10 Sekunden!",
+    time_only_timed: "Nur bei Aufgaben mit Timer",
+    not_enough_stars: "Zu wenig Sterne",
+    btn_shop: "Laden",
+    shop_title: "Münz-Laden",
+    shop_powerups: "Power-ups",
+    shop_buddies: "Begleiter",
+    shop_buy: "Kaufen",
+    shop_equip: "Auswählen",
+    shop_equipped: "Aktiv",
+    not_enough_coins: "Zu wenig Münzen",
+    no_powerup: "Erst im Laden kaufen",
+    joker_used: "Joker! Gelöst.",
+    fifty_used: "Zwei weg!",
+    shield_armed: "Schutzschild bereit",
+    shield_saved: "Schild hat dich gerettet!",
     review_title: "Das üben wir nochmal",
     praise_1: "Super!",
     praise_2: "Stark!",
@@ -231,7 +253,7 @@ var I18N = {
     reset_confirm: "Really delete all progress?",
     howto_title: "How to play",
     howto_body:
-      "Travel across the map and solve a math task at every station. Type your answer with the big keys and press Check. Collect stars, coins and badges. A treasure chest waits at the end of every journey!",
+      "Travel across the map and solve a math task at every station. Tap the correct answer from the buttons. If you miss, we show you the worked solution – tap it to continue. Collect stars, coins and badges. Spend stars for extra time, and coins in the shop for power-ups like the Joker and new buddies. At the end of every journey you open a treasure chest with a new treasure each day!",
     play_again: "New journey",
     paused: "Paused",
     station_progress: "Station {n} of {total}",
@@ -245,6 +267,28 @@ var I18N = {
     time_bonus: "Time bonus +{n}",
     daily_bonus: "Daily bonus +{n} coins!",
     timeout_msg: "Time's up! You'll get the next one.",
+    tap_chest: "Tap the chest!",
+    daily_treasure: "Treasure of the day!",
+    treasure_count: "{n} of 50 treasures",
+    new_treasure: "New treasure! +{n} coins",
+    next_task: "Next ➜",
+    buy_time: "+10 seconds for 3 stars",
+    time_added_10: "+10 seconds!",
+    time_only_timed: "Only on timed tasks",
+    not_enough_stars: "Not enough stars",
+    btn_shop: "Shop",
+    shop_title: "Coin shop",
+    shop_powerups: "Power-ups",
+    shop_buddies: "Buddies",
+    shop_buy: "Buy",
+    shop_equip: "Select",
+    shop_equipped: "Active",
+    not_enough_coins: "Not enough coins",
+    no_powerup: "Buy it in the shop first",
+    joker_used: "Joker! Solved.",
+    fifty_used: "Two removed!",
+    shield_armed: "Shield ready",
+    shield_saved: "Shield saved you!",
     review_title: "Let's practice these again",
     praise_1: "Awesome!",
     praise_2: "Great!",
@@ -1338,10 +1382,10 @@ function generateChoices(task, count) {
   return choices;
 }
 
-// Number of answer choices for a level: 4 (easy) up to 8 (hard).
+// Number of answer choices for a level: 4 (easy) up to 6 (hard).
 function choiceCountForLevel(level) {
   level = clamp(level || 1, MIN_LEVEL, MAX_LEVEL);
-  return clamp(3 + level, 4, 8);
+  return clamp(3 + level, 4, 6);
 }
 
 /*
@@ -1369,6 +1413,389 @@ function updateAvgMs(prevAvg, sampleMs) {
 /* The remaining code is the browser UI controller. It is wrapped so the     */
 /* file can also be required by Node.js for unit tests without a DOM.        */
 /* ================================================================== */
+
+/* ================================================================== */
+/* Treasures, daily reward + coin shop catalog (test-friendly, no DOM) */
+/* ================================================================== */
+
+// Five jewel palettes. Combined with the ten shapes below they produce fifty
+// unique collectible treasures (5 x 10 = 50).
+var TREASURE_PALETTES = [
+  {
+    key: "ruby",
+    de: "Rubin",
+    en: "Ruby",
+    main: "#e23b5a",
+    dark: "#9c1b33",
+    light: "#ff8aa0",
+    accent: "#ffd84d",
+  },
+  {
+    key: "sapphire",
+    de: "Saphir",
+    en: "Sapphire",
+    main: "#3b6fe2",
+    dark: "#1c3a9c",
+    light: "#8ab0ff",
+    accent: "#9be7ff",
+  },
+  {
+    key: "emerald",
+    de: "Smaragd",
+    en: "Emerald",
+    main: "#18b56a",
+    dark: "#0c7a45",
+    light: "#7ff0b6",
+    accent: "#d8ff8a",
+  },
+  {
+    key: "amethyst",
+    de: "Amethyst",
+    en: "Amethyst",
+    main: "#9b5ce2",
+    dark: "#5e2f9c",
+    light: "#cfa8ff",
+    accent: "#ff9be7",
+  },
+  {
+    key: "gold",
+    de: "Gold",
+    en: "Gold",
+    main: "#ffb53d",
+    dark: "#c47a00",
+    light: "#ffe08a",
+    accent: "#fff3c4",
+  },
+];
+
+// Ten little vector drawings. Each receives a palette and returns SVG markup.
+var TREASURE_SHAPES = [
+  {
+    key: "gem",
+    de: "Edelstein",
+    en: "Gem",
+    draw: function (p) {
+      return (
+        '<polygon points="50,8 80,38 50,92 20,38" fill="' +
+        p.main +
+        '"/>' +
+        '<polygon points="50,8 80,38 50,38" fill="' +
+        p.light +
+        '"/>' +
+        '<polygon points="20,38 50,38 50,92" fill="' +
+        p.dark +
+        '"/>' +
+        '<line x1="20" y1="38" x2="80" y2="38" stroke="' +
+        p.accent +
+        '" stroke-width="2"/>'
+      );
+    },
+  },
+  {
+    key: "coin",
+    de: "Münze",
+    en: "Coin",
+    draw: function (p) {
+      return (
+        '<circle cx="50" cy="50" r="40" fill="' +
+        p.main +
+        '"/>' +
+        '<circle cx="50" cy="50" r="40" fill="none" stroke="' +
+        p.dark +
+        '" stroke-width="4"/>' +
+        '<circle cx="50" cy="50" r="30" fill="none" stroke="' +
+        p.light +
+        '" stroke-width="3"/>' +
+        '<polygon points="50,30 56,46 73,46 59,56 64,72 50,62 36,72 41,56 27,46 44,46" fill="' +
+        p.accent +
+        '"/>'
+      );
+    },
+  },
+  {
+    key: "crown",
+    de: "Krone",
+    en: "Crown",
+    draw: function (p) {
+      return (
+        '<polygon points="18,72 22,38 38,56 50,30 62,56 78,38 82,72" fill="' +
+        p.main +
+        '"/>' +
+        '<rect x="18" y="72" width="64" height="12" rx="3" fill="' +
+        p.dark +
+        '"/>' +
+        '<circle cx="22" cy="36" r="5" fill="' +
+        p.accent +
+        '"/>' +
+        '<circle cx="50" cy="28" r="5" fill="' +
+        p.accent +
+        '"/>' +
+        '<circle cx="78" cy="36" r="5" fill="' +
+        p.accent +
+        '"/>'
+      );
+    },
+  },
+  {
+    key: "ring",
+    de: "Ring",
+    en: "Ring",
+    draw: function (p) {
+      return (
+        '<circle cx="50" cy="62" r="26" fill="none" stroke="' +
+        p.main +
+        '" stroke-width="9"/>' +
+        '<circle cx="50" cy="62" r="26" fill="none" stroke="' +
+        p.light +
+        '" stroke-width="3"/>' +
+        '<polygon points="50,12 62,30 50,40 38,30" fill="' +
+        p.accent +
+        '"/>' +
+        '<polygon points="50,12 62,30 50,30" fill="#ffffff"/>'
+      );
+    },
+  },
+  {
+    key: "key",
+    de: "Schlüssel",
+    en: "Key",
+    draw: function (p) {
+      return (
+        '<circle cx="34" cy="40" r="20" fill="none" stroke="' +
+        p.main +
+        '" stroke-width="8"/>' +
+        '<circle cx="34" cy="40" r="7" fill="' +
+        p.dark +
+        '"/>' +
+        '<rect x="50" y="36" width="38" height="8" rx="3" fill="' +
+        p.main +
+        '"/>' +
+        '<rect x="78" y="36" width="8" height="18" rx="2" fill="' +
+        p.main +
+        '"/>' +
+        '<rect x="66" y="36" width="8" height="14" rx="2" fill="' +
+        p.main +
+        '"/>'
+      );
+    },
+  },
+  {
+    key: "trophy",
+    de: "Pokal",
+    en: "Trophy",
+    draw: function (p) {
+      return (
+        '<path d="M30 22 H70 V40 A20 20 0 0 1 30 40 Z" fill="' +
+        p.main +
+        '"/>' +
+        '<path d="M30 26 H18 A10 10 0 0 0 30 40" fill="none" stroke="' +
+        p.dark +
+        '" stroke-width="5"/>' +
+        '<path d="M70 26 H82 A10 10 0 0 1 70 40" fill="none" stroke="' +
+        p.dark +
+        '" stroke-width="5"/>' +
+        '<rect x="46" y="58" width="8" height="14" fill="' +
+        p.dark +
+        '"/>' +
+        '<rect x="34" y="72" width="32" height="10" rx="3" fill="' +
+        p.dark +
+        '"/>' +
+        '<polygon points="50,28 53,36 61,36 55,41 57,49 50,44 43,49 45,41 39,36 47,36" fill="' +
+        p.accent +
+        '"/>'
+      );
+    },
+  },
+  {
+    key: "star",
+    de: "Stern",
+    en: "Star",
+    draw: function (p) {
+      return (
+        '<polygon points="50,8 61,38 93,38 67,58 77,90 50,70 23,90 33,58 7,38 39,38" fill="' +
+        p.main +
+        '"/>' +
+        '<polygon points="50,8 61,38 39,38" fill="' +
+        p.light +
+        '"/>' +
+        '<circle cx="50" cy="52" r="8" fill="' +
+        p.accent +
+        '"/>'
+      );
+    },
+  },
+  {
+    key: "potion",
+    de: "Zaubertrank",
+    en: "Potion",
+    draw: function (p) {
+      return (
+        '<rect x="42" y="14" width="16" height="16" rx="2" fill="' +
+        p.dark +
+        '"/>' +
+        '<path d="M40 28 H60 L72 64 A26 26 0 0 1 28 64 Z" fill="' +
+        p.light +
+        '"/>' +
+        '<path d="M31 54 A24 24 0 0 0 69 54 L72 64 A26 26 0 0 1 28 64 Z" fill="' +
+        p.main +
+        '"/>' +
+        '<circle cx="44" cy="60" r="3" fill="#ffffff"/>' +
+        '<circle cx="56" cy="68" r="2" fill="#ffffff"/>'
+      );
+    },
+  },
+  {
+    key: "map",
+    de: "Schatzkarte",
+    en: "Map",
+    draw: function (p) {
+      return (
+        '<rect x="22" y="20" width="56" height="60" rx="4" fill="' +
+        p.light +
+        '"/>' +
+        '<rect x="22" y="20" width="56" height="60" rx="4" fill="none" stroke="' +
+        p.dark +
+        '" stroke-width="3"/>' +
+        '<path d="M30 40 Q45 30 60 42 T74 46" fill="none" stroke="' +
+        p.main +
+        '" stroke-width="3" stroke-dasharray="4 4"/>' +
+        '<path d="M58 62 l8 8 M66 62 l-8 8" stroke="' +
+        p.main +
+        '" stroke-width="3"/>'
+      );
+    },
+  },
+  {
+    key: "pearl",
+    de: "Perle",
+    en: "Pearl",
+    draw: function (p) {
+      return (
+        '<path d="M50 30 A38 38 0 0 1 88 78 H12 A38 38 0 0 1 50 30 Z" fill="' +
+        p.main +
+        '"/>' +
+        '<path d="M50 30 V78 M30 36 L34 78 M70 36 L66 78" stroke="' +
+        p.dark +
+        '" stroke-width="2" fill="none"/>' +
+        '<circle cx="50" cy="74" r="9" fill="' +
+        p.light +
+        '"/>' +
+        '<circle cx="47" cy="71" r="3" fill="#ffffff"/>'
+      );
+    },
+  },
+];
+
+// Build the fifty treasures once. Each entry: { id, de, en, svg }.
+function buildTreasures() {
+  var list = [];
+  for (var s = 0; s < TREASURE_SHAPES.length; s++) {
+    for (var c = 0; c < TREASURE_PALETTES.length; c++) {
+      var shape = TREASURE_SHAPES[s];
+      var pal = TREASURE_PALETTES[c];
+      var sparkles = "";
+      for (var k = 0; k <= c; k++) {
+        var sx = 12 + ((k * 23 + s * 7) % 74);
+        var sy = 10 + ((k * 13 + s * 5) % 16);
+        sparkles +=
+          '<circle cx="' +
+          sx +
+          '" cy="' +
+          sy +
+          '" r="2.2" fill="#ffffff" opacity="0.85"/>';
+      }
+      var svg =
+        '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">' +
+        '<circle cx="50" cy="50" r="48" fill="' +
+        pal.dark +
+        '" opacity="0.12"/>' +
+        shape.draw(pal) +
+        sparkles +
+        "</svg>";
+      list.push({
+        id: shape.key + "-" + pal.key,
+        de: pal.de + "-" + shape.de,
+        en: pal.en + " " + shape.en,
+        svg: svg,
+      });
+    }
+  }
+  return list;
+}
+
+var TREASURES = buildTreasures();
+
+// Deterministic "treasure of the day": stable within a calendar day, changes
+// every day, and cycles through all fifty treasures over time.
+function dailyTreasureIndex(date) {
+  var d = date || new Date();
+  var dayKey = d.getFullYear() * 372 + d.getMonth() * 31 + d.getDate();
+  var n = TREASURES.length || 1;
+  return ((dayKey % n) + n) % n;
+}
+
+// Rough difficulty score (1..14): the harder the task, the longer the buzz.
+function taskDifficultyScore(task, level) {
+  if (!task || !task.operands) return 1;
+  var typeScore = task.type === "mul" ? 6 : task.type === "sub" ? 3 : 2;
+  if (task.type === "add" && task.operands.length === 3) typeScore += 2;
+  var maxOperand = 0;
+  for (var i = 0; i < task.operands.length; i++) {
+    if (task.operands[i] > maxOperand) maxOperand = task.operands[i];
+  }
+  var magScore = Math.min(4, Math.floor(maxOperand / 25));
+  var lvlScore = clamp((level || 1) - 1, 0, 4);
+  return clamp(typeScore + magScore + lvlScore, 1, 14);
+}
+
+// Map a task's difficulty to a vibration length in milliseconds.
+function vibrationForTask(task, level, firstTry) {
+  var ms = 30 + taskDifficultyScore(task, level) * 12;
+  if (!firstTry) ms = Math.round(ms * 0.6);
+  return ms;
+}
+
+// Coin shop catalog. Power-ups are consumable helpers; buddies are one-time
+// cosmetic unlocks for the traveller on the map.
+var SHOP_POWERUPS = [
+  {
+    id: "joker",
+    price: 40,
+    icon: "🪄",
+    de: "Joker",
+    en: "Joker",
+    deDesc: "Löst die Aufgabe sofort",
+    enDesc: "Solves the task instantly",
+  },
+  {
+    id: "fifty",
+    price: 20,
+    icon: "✂️",
+    de: "50:50",
+    en: "50:50",
+    deDesc: "Entfernt zwei falsche Antworten",
+    enDesc: "Removes two wrong answers",
+  },
+  {
+    id: "shield",
+    price: 25,
+    icon: "🛡️",
+    de: "Schutzschild",
+    en: "Shield",
+    deDesc: "Schützt einmal vor dem Rückschritt",
+    enDesc: "Blocks one setback",
+  },
+];
+
+var SHOP_BUDDIES = [
+  { id: "kid", price: 0, emoji: "🧒", de: "Kind", en: "Kid" },
+  { id: "fox", price: 60, emoji: "🦊", de: "Fuchs", en: "Fox" },
+  { id: "cat", price: 80, emoji: "🐱", de: "Katze", en: "Cat" },
+  { id: "monkey", price: 90, emoji: "🐵", de: "Affe", en: "Monkey" },
+  { id: "robot", price: 120, emoji: "🤖", de: "Roboter", en: "Robot" },
+  { id: "unicorn", price: 160, emoji: "🦄", de: "Einhorn", en: "Unicorn" },
+  { id: "dragon", price: 220, emoji: "🐲", de: "Drache", en: "Dragon" },
+];
 
 function startApp() {
   /* ---------------- Storage helpers ---------------- */
@@ -1398,7 +1825,7 @@ function startApp() {
   var state = {
     lang: storageGet(STORAGE_KEYS.lang, null),
     settings: Object.assign(
-      { sound: false, timer: false, quick: false, blitz: true, choices: true },
+      { sound: true, timer: false, quick: false, blitz: true, choices: true },
       storageGet(STORAGE_KEYS.settings, {}),
     ),
     progress: Object.assign(
@@ -1412,6 +1839,11 @@ function startApp() {
         lastPlayed: "",
         blitzWins: 0,
         bestCombo: 0,
+        stars: 0,
+        collection: [],
+        inventory: { joker: 0, fifty: 0, time: 0, shield: 0 },
+        buddies: ["kid"],
+        buddy: "kid",
       },
       storageGet(STORAGE_KEYS.progress, {}),
     ),
@@ -1485,6 +1917,7 @@ function startApp() {
     badgeShelf: document.getElementById("badge-shelf"),
     treasureLine: document.getElementById("treasure-line"),
     chest: document.getElementById("chest"),
+    treasureReveal: document.getElementById("treasure-reveal"),
     pauseOverlay: document.getElementById("pause-overlay"),
     fxLayer: document.getElementById("fx-layer"),
     howtoBody: document.querySelector(".howto-body"),
@@ -1498,6 +1931,7 @@ function startApp() {
     toggleBlitzModes: document.getElementById("toggle-blitz-modes"),
     numpadWrap: document.getElementById("numpad-wrap"),
     choices: document.getElementById("choices"),
+    powerups: document.getElementById("powerups"),
     checkBtn: document.querySelector('[data-action="check"]'),
     timerRing: document.getElementById("timer-ring"),
     timerArc: document.getElementById("timer-arc"),
@@ -1685,6 +2119,8 @@ function startApp() {
     grantDailyBonus();
     hideComboTag();
     buildMap(total);
+    applyBuddy();
+    renderPowerups();
     showScreen("screen-game");
     nextTask();
   }
@@ -1795,7 +2231,8 @@ function startApp() {
     // Decide per task whether it is timed (Blitz) and/or multiple choice.
     activeTask.timed =
       state.settings.timer || (state.settings.blitz && Math.random() < 0.4);
-    activeTask.choice = state.settings.choices && Math.random() < 0.5;
+    // All tasks are multiple-choice now (tap one of 4-6 answers, no typing).
+    activeTask.choice = true;
 
     currentInput = "";
     els.question.textContent = activeTask.text;
@@ -1829,6 +2266,7 @@ function startApp() {
     if (els.choices) els.choices.hidden = !useChoice;
     if (useChoice) renderChoices();
     if (els.blitzTag) els.blitzTag.hidden = !activeTask.timed;
+    renderPowerups();
   }
 
   function renderChoices() {
@@ -1882,6 +2320,8 @@ function startApp() {
     if (firstTry) {
       state.run.firstTry++;
       state.run.starStations.push(state.run.index);
+      // Stars double as a spendable currency for buying extra time.
+      state.progress.stars = (state.progress.stars || 0) + 1;
     }
     state.run.streak++;
     if (state.run.streak > state.run.bestStreak) {
@@ -1921,7 +2361,7 @@ function startApp() {
     if (timeBonus > 0)
       showToast(t("time_bonus", { n: timeBonus }), "\u23F1\uFE0F");
     mascotSay(pickPraise(), "\uD83E\uDD9C");
-    haptic(firstTry ? 20 : 12);
+    haptic(vibrationForTask(activeTask, state.run.level, firstTry));
     beep(660, 140, "triangle");
     stopTimer();
 
@@ -1940,6 +2380,7 @@ function startApp() {
   }
 
   function onWrong() {
+    stopTimer();
     state.run.streak = 0;
     state.run.combo = 1;
     hideComboTag();
@@ -1947,30 +2388,19 @@ function startApp() {
     els.answerDisplay.classList.add("is-wrong");
     els.feedback.textContent = t("feedback_wrong");
     els.feedback.className = "feedback is-wrong";
-    els.hint.textContent = buildHint(activeTask);
-    els.hint.hidden = false;
     mascotSay(pickEncourage(), "\uD83E\uDD9C");
     haptic([8, 40, 8]);
     beep(180, 220, "sawtooth");
     recordMiss();
     // Penalty: a wrong answer sends the traveller back along the path.
-    // Applied once per task (first wrong attempt) so retries don't pile up.
-    if (state.run.attemptsOnCurrent === 1) goBackOnMiss(3);
-
+    goBackOnMiss(3);
     // Adaptive difficulty: ease off after a mistake.
     if (state.run.diff === "adaptive") {
       state.run.level = clamp(state.run.level - 1, MIN_LEVEL, MAX_LEVEL);
     }
     currentInput = "";
-    renderAnswer();
-    // In choice mode a wrong tap should not strand the child: clear it shortly.
-    if (activeTask.choice && els.choices) {
-      window.setTimeout(function () {
-        els.choices.querySelectorAll(".choice.is-wrong").forEach(function (c) {
-          c.classList.remove("is-wrong");
-        });
-      }, 700);
-    }
+    // Show the worked calculation path; tap it to move to the next task.
+    showSolution();
   }
 
   // Remember a missed task so we can show a short review at the end.
@@ -1985,6 +2415,13 @@ function startApp() {
   // along the path. The walker animates to the earlier station and a small
   // toast shows the setback. Clamped so the journey never goes before start.
   function goBackOnMiss(steps) {
+    // A ready shield absorbs one setback instead of moving the traveller back.
+    if (state.run && state.run.shieldArmed) {
+      state.run.shieldArmed = false;
+      renderPowerups();
+      showToast(t("shield_saved"), "🛡️");
+      return;
+    }
     var back = steps || 3;
     var before = state.run.index;
     state.run.index = clamp(state.run.index - back, 0, state.run.total);
@@ -1995,10 +2432,70 @@ function startApp() {
     }
   }
 
-  function showHint() {
-    if (!activeTask) return;
-    els.hint.textContent = buildHint(activeTask);
-    els.hint.hidden = false;
+  // Build a child-friendly worked solution. Multiplication is shown as repeated
+  // addition, the way it is taught in second grade.
+  function buildSolution(task) {
+    if (!task || !task.operands) return "";
+    var ops = task.operands;
+    if (task.type === "mul") {
+      var count = Math.min(ops[0], ops[1]);
+      var term = Math.max(ops[0], ops[1]);
+      var parts = [];
+      for (var i = 0; i < count; i++) parts.push(term);
+      return (
+        ops[0] +
+        " × " +
+        ops[1] +
+        " = " +
+        parts.join(" + ") +
+        " = " +
+        task.answer
+      );
+    }
+    if (task.type === "sub") {
+      return ops[0] + " − " + ops[1] + " = " + task.answer;
+    }
+    return ops.join(" + ") + " = " + task.answer;
+  }
+
+  // After a wrong or too-slow answer: reveal the worked path and wait for a tap
+  // before moving on (no retries, no separate hint).
+  function showSolution() {
+    stopTimer();
+    state.awaitingNext = true;
+    if (els.choices) {
+      els.choices.querySelectorAll(".choice").forEach(function (c) {
+        if (parseInt(c.textContent, 10) === activeTask.answer) {
+          c.classList.add("is-correct");
+        }
+        c.disabled = true;
+      });
+    }
+    if (els.hint) {
+      els.hint.textContent = buildSolution(activeTask);
+      els.hint.hidden = false;
+      els.hint.classList.add("solution");
+      els.hint.onclick = advanceAfterWrong;
+    }
+    if (els.choices) {
+      var cont = document.createElement("button");
+      cont.type = "button";
+      cont.className = "choice choice--continue";
+      cont.textContent = t("next_task");
+      cont.addEventListener("click", advanceAfterWrong);
+      els.choices.appendChild(cont);
+    }
+  }
+  function advanceAfterWrong() {
+    if (!state.awaitingNext) return;
+    state.awaitingNext = false;
+    if (els.hint) {
+      els.hint.classList.remove("solution");
+      els.hint.onclick = null;
+    }
+    state.run.index++;
+    moveWalker(state.run.index);
+    nextTask();
   }
 
   /* ---------------- Juicy feedback helpers ---------------- */
@@ -2075,17 +2572,18 @@ function startApp() {
       return;
     }
     var budget = computeTimeBudget(state.progress.avgMs, state.run.level);
+    state.timerBudget = budget;
     state.timerRemaining = budget;
     if (els.timerRing) {
       els.timerRing.hidden = false;
       els.timerRing.classList.remove("is-low");
     }
-    updateTimerRing(budget, budget);
+    updateTimerRing(state.timerBudget, state.timerBudget);
     state.timerDeadline = Date.now() + budget * 1000;
     state.timerId = window.setInterval(function () {
       var remaining = Math.max(0, (state.timerDeadline - Date.now()) / 1000);
       state.timerRemaining = remaining;
-      updateTimerRing(remaining, budget);
+      updateTimerRing(remaining, state.timerBudget);
       if (remaining <= 0) {
         stopTimer();
         onTimeout();
@@ -2107,8 +2605,6 @@ function startApp() {
     if (state.run.attemptsOnCurrent === 0) state.run.attemptsOnCurrent = 1;
     els.feedback.textContent = t("timeout_msg");
     els.feedback.className = "feedback is-wrong";
-    els.hint.textContent = buildHint(activeTask);
-    els.hint.hidden = false;
     mascotSay(pickEncourage(), "\u23F0");
     haptic([10, 40, 10]);
     beep(160, 240, "sawtooth");
@@ -2122,7 +2618,7 @@ function startApp() {
     }
     // Too slow on the Blitz timer: send the traveller back along the path.
     goBackOnMiss(3);
-    window.setTimeout(nextTask, 1000);
+    showSolution();
   }
   function stopTimer() {
     if (state.timerId) {
@@ -2182,12 +2678,14 @@ function startApp() {
     els.sumCoins.textContent = state.run.coins;
     els.sumAccuracy.textContent = accuracy + "%";
     els.sumStreak.textContent = state.run.bestStreak;
-    els.treasureLine.textContent = pickTreasure();
+    prepareChestReveal();
 
     renderReview();
     renderBadges();
     showScreen("screen-summary");
     els.chest.classList.add("is-shaking");
+    playVictoryMelody();
+    haptic([60, 40, 60, 40, 140]);
     refreshMenuStats();
   }
 
@@ -2242,6 +2740,7 @@ function startApp() {
     els.chest.classList.add("is-open");
     burstConfetti();
     beep(880, 200, "triangle");
+    revealTreasure();
     window.setTimeout(function () {
       els.chest.classList.remove("is-open");
     }, 600);
@@ -2264,6 +2763,367 @@ function startApp() {
         }, 3200);
       })(piece);
     }
+  }
+
+  /* ---------------- Daily treasure reveal ---------------- */
+  function treasureName(tr) {
+    return tr[state.lang] || tr.de;
+  }
+
+  // Reset the chest to its closed, tappable state before the summary shows.
+  function prepareChestReveal() {
+    state.revealed = false;
+    els.treasureLine.textContent = t("tap_chest");
+    if (els.treasureReveal) {
+      els.treasureReveal.hidden = true;
+      els.treasureReveal.innerHTML = "";
+    }
+  }
+
+  // Reveal the treasure of the day, collect it, and celebrate. Triggered when
+  // the child taps the chest on the summary screen.
+  function revealTreasure() {
+    if (state.revealed) return;
+    state.revealed = true;
+    var tr = TREASURES[dailyTreasureIndex(new Date())];
+    if (!state.progress.collection) state.progress.collection = [];
+    var isNew = state.progress.collection.indexOf(tr.id) === -1;
+    if (isNew) {
+      state.progress.collection.push(tr.id);
+      var reward = 25;
+      state.progress.coins += reward;
+      showToast(t("new_treasure", { n: reward }), "✨");
+    }
+    storageSet(STORAGE_KEYS.progress, state.progress);
+    if (els.treasureReveal) {
+      els.treasureReveal.hidden = false;
+      els.treasureReveal.innerHTML =
+        '<div class="treasure-img">' +
+        tr.svg +
+        '</div><div class="treasure-name"></div><div class="treasure-count"></div>';
+      els.treasureReveal.querySelector(".treasure-name").textContent =
+        treasureName(tr);
+      els.treasureReveal.querySelector(".treasure-count").textContent = t(
+        "treasure_count",
+        { n: state.progress.collection.length },
+      );
+      els.treasureReveal.classList.remove("is-pop");
+      void els.treasureReveal.offsetWidth;
+      els.treasureReveal.classList.add("is-pop");
+    }
+    els.treasureLine.textContent = t("daily_treasure");
+    refreshMenuStats();
+  }
+
+  // A short, cheerful arpeggio when the goal is reached (respects sound).
+  function playVictoryMelody() {
+    var notes = [
+      [523, 150],
+      [659, 150],
+      [784, 150],
+      [1047, 320],
+    ];
+    var delay = 0;
+    notes.forEach(function (note) {
+      window.setTimeout(function () {
+        beep(note[0], note[1], "triangle");
+      }, delay);
+      delay += note[1] + 20;
+    });
+  }
+
+  /* ---------------- Coin shop + power-ups ---------------- */
+  function shopLabel(item) {
+    return item[state.lang] || item.de;
+  }
+  function shopDesc(item) {
+    return (state.lang === "en" ? item.enDesc : item.deDesc) || item.deDesc;
+  }
+  function inventoryCount(id) {
+    return (state.progress.inventory && state.progress.inventory[id]) || 0;
+  }
+
+  var STAR_TIME_COST = 3;
+  function starBank() {
+    return state.progress.stars || 0;
+  }
+  // Spend stars during a timed task to gain ten extra seconds of thinking time.
+  function buyTimeWithStars() {
+    if (!activeTask || !activeTask.timed || !state.timerId) {
+      showToast(t("time_only_timed"), "⏳");
+      return;
+    }
+    if (starBank() < STAR_TIME_COST) {
+      showToast(t("not_enough_stars"), "⭐");
+      return;
+    }
+    state.progress.stars = starBank() - STAR_TIME_COST;
+    state.timerDeadline += 10000;
+    state.timerBudget = (state.timerBudget || 10) + 10;
+    storageSet(STORAGE_KEYS.progress, state.progress);
+    showToast(t("time_added_10"), "⏳");
+    beep(620, 140, "sine");
+    refreshMenuStats();
+    renderPowerups();
+  }
+
+  // The little tray of power-up buttons shown during a run.
+  function renderPowerups() {
+    if (!els.powerups) return;
+    els.powerups.innerHTML = "";
+    // Stars -> +10s button (handy on timed Blitz tasks).
+    var starBtn = document.createElement("button");
+    starBtn.type = "button";
+    starBtn.className = "powerup powerup--star";
+    starBtn.innerHTML =
+      '<span class="powerup-icon" aria-hidden="true">⭐</span>' +
+      '<span class="powerup-count">' +
+      starBank() +
+      "</span>";
+    var canBuyTime =
+      starBank() >= STAR_TIME_COST &&
+      activeTask &&
+      activeTask.timed &&
+      state.timerId;
+    if (!canBuyTime) starBtn.classList.add("is-empty");
+    starBtn.setAttribute(
+      "aria-label",
+      t("buy_time") + " (" + STAR_TIME_COST + " ⭐)",
+    );
+    starBtn.title = t("buy_time");
+    starBtn.addEventListener("click", buyTimeWithStars);
+    els.powerups.appendChild(starBtn);
+    SHOP_POWERUPS.forEach(function (pu) {
+      var count = inventoryCount(pu.id);
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "powerup" + (count <= 0 ? " is-empty" : "");
+      btn.innerHTML =
+        '<span class="powerup-icon" aria-hidden="true">' +
+        pu.icon +
+        '</span><span class="powerup-count">' +
+        count +
+        "</span>";
+      btn.setAttribute("aria-label", shopLabel(pu) + " (" + count + ")");
+      btn.addEventListener("click", function () {
+        usePowerup(pu.id);
+      });
+      els.powerups.appendChild(btn);
+    });
+  }
+
+  function usePowerup(id) {
+    if (inventoryCount(id) <= 0) {
+      showToast(t("no_powerup"), "🛒");
+      return;
+    }
+    var used = false;
+    if (id === "joker") used = jokerSolve();
+    else if (id === "fifty") used = removeTwoWrong();
+    else if (id === "time") used = addBlitzTime();
+    else if (id === "shield") used = armShield();
+    if (used) {
+      state.progress.inventory[id] -= 1;
+      storageSet(STORAGE_KEYS.progress, state.progress);
+      renderPowerups();
+    }
+  }
+
+  // Joker: instantly solve the current task. It keeps the journey moving but
+  // does not award a first-try star (it counts as a helped solve).
+  function jokerSolve() {
+    if (!activeTask) return false;
+    stopTimer();
+    if (els.choices) {
+      els.choices.querySelectorAll(".choice").forEach(function (c) {
+        if (parseInt(c.textContent, 10) === activeTask.answer) {
+          c.classList.add("is-correct");
+        }
+        c.disabled = true;
+      });
+    }
+    els.feedback.textContent = t("joker_used");
+    els.feedback.className = "feedback is-correct";
+    mascotSay(t("joker_used"), "🪄");
+    beep(700, 160, "triangle");
+    state.run.index++;
+    moveWalker(state.run.index);
+    activeTask = null;
+    window.setTimeout(nextTask, 750);
+    return true;
+  }
+
+  // 50:50 helper: disable two of the wrong answers.
+  function removeTwoWrong() {
+    if (!activeTask || !els.choices) return false;
+    var wrong = [];
+    els.choices.querySelectorAll(".choice").forEach(function (c) {
+      if (!c.disabled && parseInt(c.textContent, 10) !== activeTask.answer) {
+        wrong.push(c);
+      }
+    });
+    if (wrong.length < 2) return false;
+    for (var i = wrong.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = wrong[i];
+      wrong[i] = wrong[j];
+      wrong[j] = tmp;
+    }
+    wrong[0].disabled = true;
+    wrong[0].classList.add("is-faded");
+    wrong[1].disabled = true;
+    wrong[1].classList.add("is-faded");
+    showToast(t("fifty_used"), "✂️");
+    beep(520, 120, "sine");
+    return true;
+  }
+
+  // Extra time: extend a running Blitz timer by five seconds.
+  function addBlitzTime() {
+    if (!activeTask || !activeTask.timed || !state.timerId) return false;
+    state.timerDeadline += 5000;
+    state.timerBudget = (state.timerBudget || 5) + 5;
+    showToast(t("time_added"), "⏳");
+    beep(600, 120, "sine");
+    return true;
+  }
+
+  // Shield: arm protection that absorbs the next setback.
+  function armShield() {
+    if (!state.run || state.run.shieldArmed) return false;
+    state.run.shieldArmed = true;
+    showToast(t("shield_armed"), "🛡️");
+    beep(560, 120, "sine");
+    return true;
+  }
+
+  /* ---------------- Shop overlay ---------------- */
+  function ensureShop() {
+    if (els.shopOverlay) return;
+    var ov = document.createElement("div");
+    ov.id = "shop-overlay";
+    ov.className = "overlay shop-overlay";
+    ov.hidden = true;
+    ov.innerHTML =
+      '<div class="card shop-card">' +
+      '<button class="btn btn--ghost shop-close" type="button" data-action="close-shop">✕</button>' +
+      '<h2 class="shop-title"></h2>' +
+      '<p class="shop-coins"></p>' +
+      '<h3 class="shop-section-label shop-h-pu"></h3>' +
+      '<div class="shop-list" id="shop-powerups"></div>' +
+      '<h3 class="shop-section-label shop-h-buddy"></h3>' +
+      '<div class="shop-grid" id="shop-buddies"></div>' +
+      "</div>";
+    document.body.appendChild(ov);
+    els.shopOverlay = ov;
+    els.shopPowerups = ov.querySelector("#shop-powerups");
+    els.shopBuddies = ov.querySelector("#shop-buddies");
+    ov.addEventListener("click", function (event) {
+      if (event.target === ov) closeShop();
+    });
+  }
+  function openShop() {
+    ensureShop();
+    renderShop();
+    els.shopOverlay.hidden = false;
+  }
+  function closeShop() {
+    if (els.shopOverlay) els.shopOverlay.hidden = true;
+  }
+  function renderShop() {
+    var ov = els.shopOverlay;
+    ov.querySelector(".shop-title").textContent = t("shop_title");
+    ov.querySelector(".shop-coins").textContent = "🪙 " + state.progress.coins;
+    ov.querySelector(".shop-h-pu").textContent = t("shop_powerups");
+    ov.querySelector(".shop-h-buddy").textContent = t("shop_buddies");
+    els.shopPowerups.innerHTML = "";
+    SHOP_POWERUPS.forEach(function (pu) {
+      var row = document.createElement("div");
+      row.className = "shop-item";
+      row.innerHTML =
+        '<span class="shop-item-icon" aria-hidden="true">' +
+        pu.icon +
+        '</span><span class="shop-item-text"><span class="shop-item-name"></span><span class="shop-item-desc"></span></span>' +
+        '<button class="btn btn--primary shop-buy" type="button"></button>';
+      row.querySelector(".shop-item-name").textContent =
+        shopLabel(pu) + " (" + inventoryCount(pu.id) + ")";
+      row.querySelector(".shop-item-desc").textContent = shopDesc(pu);
+      var buy = row.querySelector(".shop-buy");
+      buy.textContent = t("shop_buy") + " · " + pu.price + " 🪙";
+      buy.disabled = state.progress.coins < pu.price;
+      buy.addEventListener("click", function () {
+        buyPowerup(pu);
+      });
+      els.shopPowerups.appendChild(row);
+    });
+    els.shopBuddies.innerHTML = "";
+    SHOP_BUDDIES.forEach(function (b) {
+      var owned =
+        b.price === 0 || (state.progress.buddies || []).indexOf(b.id) !== -1;
+      var equipped = state.progress.buddy === b.id;
+      var card = document.createElement("button");
+      card.type = "button";
+      card.className = "buddy-card" + (equipped ? " is-equipped" : "");
+      if (!owned && state.progress.coins < b.price) {
+        card.classList.add("is-locked");
+      }
+      card.innerHTML =
+        '<span class="buddy-emoji" aria-hidden="true">' +
+        b.emoji +
+        '</span><span class="buddy-name"></span><span class="buddy-action"></span>';
+      card.querySelector(".buddy-name").textContent = shopLabel(b);
+      var action = equipped
+        ? t("shop_equipped")
+        : owned
+          ? t("shop_equip")
+          : b.price + " 🪙";
+      card.querySelector(".buddy-action").textContent = action;
+      card.addEventListener("click", function () {
+        buyOrEquipBuddy(b);
+      });
+      els.shopBuddies.appendChild(card);
+    });
+  }
+  function buyPowerup(pu) {
+    if (state.progress.coins < pu.price) {
+      showToast(t("not_enough_coins"), "🪙");
+      return;
+    }
+    state.progress.coins -= pu.price;
+    if (!state.progress.inventory) state.progress.inventory = {};
+    state.progress.inventory[pu.id] = inventoryCount(pu.id) + 1;
+    storageSet(STORAGE_KEYS.progress, state.progress);
+    beep(720, 120, "triangle");
+    refreshMenuStats();
+    renderShop();
+    renderPowerups();
+  }
+  function buyOrEquipBuddy(b) {
+    var owned =
+      b.price === 0 || (state.progress.buddies || []).indexOf(b.id) !== -1;
+    if (!owned) {
+      if (state.progress.coins < b.price) {
+        showToast(t("not_enough_coins"), "🪙");
+        return;
+      }
+      state.progress.coins -= b.price;
+      if (!state.progress.buddies) state.progress.buddies = ["kid"];
+      state.progress.buddies.push(b.id);
+      beep(720, 120, "triangle");
+    }
+    state.progress.buddy = b.id;
+    storageSet(STORAGE_KEYS.progress, state.progress);
+    applyBuddy();
+    refreshMenuStats();
+    renderShop();
+  }
+  // Apply the chosen travelling buddy to the map walker.
+  function applyBuddy() {
+    var id = state.progress.buddy || "kid";
+    var found = SHOP_BUDDIES.filter(function (x) {
+      return x.id === id;
+    })[0];
+    if (found && els.mapWalker) els.mapWalker.textContent = found.emoji;
   }
 
   /* ---------------- Navigation helpers ---------------- */
@@ -2344,6 +3204,11 @@ function startApp() {
       lastPlayed: "",
       blitzWins: 0,
       bestCombo: 0,
+      stars: 0,
+      collection: [],
+      inventory: { joker: 0, fifty: 0, time: 0, shield: 0 },
+      buddies: ["kid"],
+      buddy: "kid",
     };
     storageSet(STORAGE_KEYS.progress, state.progress);
     refreshMenuStats();
@@ -2373,9 +3238,6 @@ function startApp() {
       case "check":
         checkAnswer();
         break;
-      case "hint":
-        showHint();
-        break;
       case "pause":
         stopTimer();
         els.pauseOverlay.hidden = false;
@@ -2393,6 +3255,12 @@ function startApp() {
         break;
       case "reset":
         resetProgress();
+        break;
+      case "go-shop":
+        openShop();
+        break;
+      case "close-shop":
+        closeShop();
         break;
       default:
         break;
@@ -2457,6 +3325,7 @@ function startApp() {
     wireActions();
     renderLanguageGrids();
     refreshMenuStats();
+    applyBuddy();
 
     if (state.lang && I18N[state.lang]) {
       applyI18n();
@@ -2502,5 +3371,9 @@ if (typeof module !== "undefined" && module.exports) {
     choiceCountForLevel: choiceCountForLevel,
     computeTimeBudget: computeTimeBudget,
     updateAvgMs: updateAvgMs,
+    TREASURES: TREASURES,
+    dailyTreasureIndex: dailyTreasureIndex,
+    taskDifficultyScore: taskDifficultyScore,
+    vibrationForTask: vibrationForTask,
   };
 }

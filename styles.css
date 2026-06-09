@@ -1320,3 +1320,238 @@ h3 {
     animation: none;
   }
 }
+
+/* ============================================================
+   v1.2.0 — power-up tray, daily treasure reveal, coin shop
+   ============================================================ */
+
+/* Power-up tray shown during a run */
+.powerups {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 6px 0 2px;
+}
+.powerup {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 16px;
+  background: var(--card, #fff);
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.12);
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition:
+    transform 0.08s ease,
+    box-shadow 0.08s ease,
+    opacity 0.15s ease;
+}
+.powerup:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.12);
+}
+.powerup-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+.powerup-count {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #444;
+  min-width: 1ch;
+}
+.powerup.is-empty {
+  opacity: 0.4;
+  filter: grayscale(0.6);
+}
+.powerup--star {
+  background: linear-gradient(180deg, #fff6d8, #ffe7a8);
+}
+.powerup--star .powerup-count {
+  color: #a86b00;
+}
+
+/* Continue + faded choice states */
+.choice.is-faded {
+  opacity: 0.28;
+  pointer-events: none;
+}
+.choice--continue {
+  grid-column: 1 / -1;
+  background: linear-gradient(180deg, #ffd23f, #ff9f1c) !important;
+  color: #5a3a00 !important;
+  font-weight: 800;
+}
+
+/* The worked-solution panel (reuses #hint) after a wrong answer */
+.hint.solution {
+  display: block;
+  margin: 10px auto 4px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: #fff3d6;
+  border: 2px dashed #ffb53d;
+  color: #6b4b00;
+  font-size: 1.25rem;
+  font-weight: 800;
+  text-align: center;
+  cursor: pointer;
+  animation: pop 0.25s ease;
+}
+
+/* Daily treasure reveal inside the summary chest */
+.treasure-reveal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: 4px auto 10px;
+}
+.treasure-reveal.is-pop .treasure-img {
+  animation: treasurePop 0.5s cubic-bezier(0.2, 1.4, 0.5, 1) both;
+}
+.treasure-img {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.18));
+}
+.treasure-img svg {
+  width: 100%;
+  height: 100%;
+}
+.treasure-name {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #5a3a8a;
+}
+.treasure-count {
+  font-size: 0.9rem;
+  color: #888;
+}
+@keyframes treasurePop {
+  0% {
+    transform: scale(0.2) rotate(-18deg);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.12) rotate(6deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+/* Coin shop overlay */
+.shop-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 60;
+}
+.shop-card {
+  position: relative;
+  width: min(440px, 94vw);
+  max-height: 88vh;
+  overflow-y: auto;
+  text-align: center;
+  padding: 22px 18px 24px;
+}
+.shop-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.2rem;
+  padding: 4px 10px;
+}
+.shop-title {
+  margin: 0 0 2px;
+}
+.shop-coins {
+  margin: 0 0 14px;
+  font-weight: 800;
+  color: #a86b00;
+}
+.shop-section-label {
+  text-align: left;
+  margin: 14px 4px 8px;
+  color: #6b5b8a;
+}
+.shop-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.shop-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: var(--card, #fff);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.08);
+}
+.shop-item-icon {
+  font-size: 1.7rem;
+  line-height: 1;
+}
+.shop-item-text {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  flex: 1;
+}
+.shop-item-name {
+  font-weight: 800;
+}
+.shop-item-desc {
+  font-size: 0.85rem;
+  color: #777;
+}
+.shop-buy {
+  white-space: nowrap;
+  padding: 8px 14px;
+}
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 10px;
+}
+.buddy-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 6px;
+  border-radius: 16px;
+  background: var(--card, #fff);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.08);
+  border: 3px solid transparent;
+  cursor: pointer;
+}
+.buddy-emoji {
+  font-size: 2rem;
+  line-height: 1;
+}
+.buddy-name {
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+.buddy-action {
+  font-size: 0.75rem;
+  color: #777;
+}
+.buddy-card.is-equipped {
+  border-color: #18b56a;
+}
+.buddy-card.is-locked {
+  opacity: 0.85;
+}

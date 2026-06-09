@@ -94,6 +94,10 @@
               <span class="btn-emoji" aria-hidden="true">📖</span>
               <span data-i18n="btn_howto">So wird gespielt</span>
             </button>
+            <button class="btn btn--secondary" data-action="go-shop">
+              <span class="btn-emoji" aria-hidden="true">🛒</span>
+              <span data-i18n="btn_shop">Laden</span>
+            </button>
             <button class="btn btn--secondary" data-action="go-settings">
               <span class="btn-emoji" aria-hidden="true">⚙️</span>
               <span data-i18n="btn_settings">Einstellungen</span>
@@ -396,11 +400,9 @@
             hidden
           ></div>
 
+          <div class="powerups" id="powerups" aria-label="Power-ups"></div>
+
           <div class="task-actions">
-            <button class="btn btn--hint" data-action="hint">
-              <span class="btn-emoji" aria-hidden="true">💡</span>
-              <span data-i18n="btn_hint">Tipp</span>
-            </button>
             <button
               class="btn btn--primary btn--check"
               data-action="check"
@@ -429,6 +431,7 @@
             <div class="chest-emoji">🧰</div>
             <span class="chest-shine" aria-hidden="true"></span>
           </div>
+          <div class="treasure-reveal" id="treasure-reveal" hidden></div>
           <h2 id="summary-title" data-i18n="run_complete">Reise geschafft!</h2>
           <p
             class="treasure-line"
@@ -475,6 +478,13 @@
               data-i18n="play_again"
             >
               Neue Reise
+            </button>
+            <button
+              class="btn btn--secondary"
+              data-action="go-shop"
+              data-i18n="btn_shop"
+            >
+              Laden
             </button>
             <button
               class="btn btn--secondary"
@@ -525,13 +535,6 @@
             <span data-i18n="set_blitz">Blitz-Aufgaben mit Timer</span>
             <span class="switch">
               <input type="checkbox" id="toggle-blitz" />
-              <span class="switch-track" aria-hidden="true"></span>
-            </span>
-          </label>
-          <label class="switch-row">
-            <span data-i18n="set_choices">Antwort-Knöpfe statt Tippen</span>
-            <span class="switch">
-              <input type="checkbox" id="toggle-choices" />
               <span class="switch-track" aria-hidden="true"></span>
             </span>
           </label>
