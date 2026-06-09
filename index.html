@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de" dir="ltr">
   <head>
     <meta charset="utf-8" />
@@ -49,7 +49,9 @@
       >
         <div class="card card--centered">
           <div class="brand-badge" aria-hidden="true">💫</div>
-          <h1 id="language-title" data-i18n="lang_title">Wähle deine Sprache</h1>
+          <h1 id="language-title" data-i18n="lang_title">
+            Wähle deine Sprache
+          </h1>
           <p class="muted" data-i18n="lang_hint">
             Du kannst sie später in den Einstellungen ändern.
           </p>
@@ -113,35 +115,99 @@
           </button>
           <h2 id="modes-title" data-i18n="mode_title">Wähle deine Rechenart</h2>
 
-          <div class="mode-grid" role="radiogroup" aria-labelledby="modes-title">
-            <button class="mode-card is-selected" data-mode="add" role="radio" aria-checked="true">
+          <div
+            class="mode-grid"
+            role="radiogroup"
+            aria-labelledby="modes-title"
+          >
+            <button
+              class="mode-card is-selected"
+              data-mode="add"
+              role="radio"
+              aria-checked="true"
+            >
               <span class="mode-emoji" aria-hidden="true">➕</span>
               <span class="mode-name" data-i18n="m_add">Plus-Rechnen</span>
-              <span class="mode-desc" data-i18n="m_add_desc">Addiere 2 oder 3 Zahlen bis 100.</span>
+              <span class="mode-desc" data-i18n="m_add_desc"
+                >Addiere 2 oder 3 Zahlen bis 100.</span
+              >
             </button>
-            <button class="mode-card" data-mode="sub" role="radio" aria-checked="false">
+            <button
+              class="mode-card"
+              data-mode="sub"
+              role="radio"
+              aria-checked="false"
+            >
               <span class="mode-emoji" aria-hidden="true">➖</span>
               <span class="mode-name" data-i18n="m_sub">Minus-Rechnen</span>
-              <span class="mode-desc" data-i18n="m_sub_desc">Ziehe Zahlen bis 100 ab.</span>
+              <span class="mode-desc" data-i18n="m_sub_desc"
+                >Ziehe Zahlen bis 100 ab.</span
+              >
             </button>
-            <button class="mode-card" data-mode="mul" role="radio" aria-checked="false">
+            <button
+              class="mode-card"
+              data-mode="mul"
+              role="radio"
+              aria-checked="false"
+            >
               <span class="mode-emoji" aria-hidden="true">✖️</span>
               <span class="mode-name" data-i18n="m_mul">Mal-Rechnen</span>
-              <span class="mode-desc" data-i18n="m_mul_desc">Das kleine Einmaleins.</span>
+              <span class="mode-desc" data-i18n="m_mul_desc"
+                >Das kleine Einmaleins.</span
+              >
             </button>
-            <button class="mode-card" data-mode="mix" role="radio" aria-checked="false">
+            <button
+              class="mode-card"
+              data-mode="mix"
+              role="radio"
+              aria-checked="false"
+            >
               <span class="mode-emoji" aria-hidden="true">🌈</span>
               <span class="mode-name" data-i18n="m_mix">Bunte Mischung</span>
-              <span class="mode-desc" data-i18n="m_mix_desc">Alles wild gemischt.</span>
+              <span class="mode-desc" data-i18n="m_mix_desc"
+                >Alles wild gemischt.</span
+              >
             </button>
           </div>
 
           <h3 class="section-label" data-i18n="diff_title">Schwierigkeit</h3>
           <div class="chip-row" role="radiogroup" aria-label="Schwierigkeit">
-            <button class="chip is-selected" data-diff="adaptive" role="radio" aria-checked="true" data-i18n="d_adaptive">Mitwachsend</button>
-            <button class="chip" data-diff="easy" role="radio" aria-checked="false" data-i18n="d_easy">Leicht</button>
-            <button class="chip" data-diff="medium" role="radio" aria-checked="false" data-i18n="d_medium">Mittel</button>
-            <button class="chip" data-diff="hard" role="radio" aria-checked="false" data-i18n="d_hard">Schwer</button>
+            <button
+              class="chip is-selected"
+              data-diff="adaptive"
+              role="radio"
+              aria-checked="true"
+              data-i18n="d_adaptive"
+            >
+              Mitwachsend
+            </button>
+            <button
+              class="chip"
+              data-diff="easy"
+              role="radio"
+              aria-checked="false"
+              data-i18n="d_easy"
+            >
+              Leicht
+            </button>
+            <button
+              class="chip"
+              data-diff="medium"
+              role="radio"
+              aria-checked="false"
+              data-i18n="d_medium"
+            >
+              Mittel
+            </button>
+            <button
+              class="chip"
+              data-diff="hard"
+              role="radio"
+              aria-checked="false"
+              data-i18n="d_hard"
+            >
+              Schwer
+            </button>
           </div>
 
           <label class="switch-row">
@@ -155,6 +221,13 @@
             <span data-i18n="set_timer">Zeit-Modus</span>
             <span class="switch">
               <input type="checkbox" id="toggle-timer-modes" />
+              <span class="switch-track" aria-hidden="true"></span>
+            </span>
+          </label>
+          <label class="switch-row">
+            <span data-i18n="set_blitz">Blitz-Aufgaben mit Timer</span>
+            <span class="switch">
+              <input type="checkbox" id="toggle-blitz-modes" />
               <span class="switch-track" aria-hidden="true"></span>
             </span>
           </label>
@@ -173,50 +246,166 @@
         aria-labelledby="game-question"
       >
         <header class="game-bar">
-          <button class="btn btn--ghost btn--icon" data-action="pause" aria-label="Pause">⏸️</button>
+          <button
+            class="btn btn--ghost btn--icon"
+            data-action="pause"
+            aria-label="Pause"
+          >
+            ⏸️
+          </button>
           <div class="game-stats">
-            <span class="stat-chip" title="Serie">🔥 <b id="game-streak">0</b></span>
-            <span class="stat-chip" title="Münzen">🪙 <b id="game-coins">0</b></span>
-            <span class="stat-chip" id="game-timer-chip" hidden title="Zeit">⏱️ <b id="game-timer">0</b></span>
+            <span class="stat-chip" title="Serie"
+              >🔥 <b id="game-streak">0</b></span
+            >
+            <span class="stat-chip" title="Münzen"
+              >🪙 <b id="game-coins">0</b></span
+            >
+            <span class="stat-chip" id="game-timer-chip" hidden title="Zeit"
+              >⏱️ <b id="game-timer">0</b></span
+            >
           </div>
         </header>
 
         <!-- Adventure map / journey progress -->
         <div class="map" aria-hidden="true">
           <svg id="map-svg" viewBox="0 0 1000 160" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="trail-grad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#ffd84d" />
+                <stop offset="50%" stop-color="#ff8a3d" />
+                <stop offset="100%" stop-color="#18c29c" />
+              </linearGradient>
+            </defs>
             <path
               id="map-path"
               d="M 20 120 C 160 20, 260 200, 400 100 S 680 20, 820 110 S 960 120, 980 60"
               fill="none"
-              stroke="rgba(255,255,255,0.35)"
+              stroke="rgba(255,255,255,0.30)"
               stroke-width="8"
               stroke-linecap="round"
-              stroke-dasharray="4 18"
+              stroke-dasharray="2 16"
+            />
+            <path
+              id="map-trail"
+              d="M 20 120 C 160 20, 260 200, 400 100 S 680 20, 820 110 S 960 120, 980 60"
+              fill="none"
+              stroke="url(#trail-grad)"
+              stroke-width="9"
+              stroke-linecap="round"
             />
             <g id="map-stations"></g>
-            <text id="map-walker" x="20" y="112" font-size="44" text-anchor="middle">🧒</text>
+            <g id="map-stations-fx"></g>
+            <text
+              id="map-walker"
+              x="20"
+              y="112"
+              font-size="44"
+              text-anchor="middle"
+            >
+              🧒
+            </text>
             <text x="980" y="78" font-size="46" text-anchor="middle">🏝️</text>
           </svg>
-          <p class="map-progress" id="map-progress" data-i18n-tpl="station_progress">Station 1 von 18</p>
+          <p
+            class="map-progress"
+            id="map-progress"
+            data-i18n-tpl="station_progress"
+          >
+            Station 1 von 18
+          </p>
+        </div>
+
+        <!-- Friendly mascot that cheers the player on -->
+        <div class="mascot-wrap" aria-hidden="true">
+          <span class="mascot" id="mascot">🦜</span>
+          <span class="mascot-bubble" id="mascot-bubble"></span>
         </div>
 
         <!-- Task card -->
         <div class="task-card">
-          <p class="task-question" id="game-question" aria-live="polite">7 + 5 =</p>
-          <output class="answer-display" id="answer-display" aria-live="polite">_</output>
+          <span
+            class="combo-tag"
+            id="combo-tag"
+            aria-hidden="true"
+            hidden
+          ></span>
 
-          <div class="feedback" id="feedback" role="status" aria-live="assertive"></div>
+          <div class="task-top">
+            <span class="blitz-tag" id="blitz-tag" hidden data-i18n="blitz_tag"
+              >Blitz!</span
+            >
+            <svg
+              class="timer-ring"
+              id="timer-ring"
+              viewBox="0 0 60 60"
+              hidden
+              aria-hidden="true"
+            >
+              <circle class="timer-ring-bg" cx="30" cy="30" r="26"></circle>
+              <circle
+                class="timer-ring-arc"
+                id="timer-arc"
+                cx="30"
+                cy="30"
+                r="26"
+                transform="rotate(-90 30 30)"
+              ></circle>
+              <text
+                class="timer-ring-num"
+                id="timer-num"
+                x="30"
+                y="38"
+                text-anchor="middle"
+              >
+                0
+              </text>
+            </svg>
+          </div>
+
+          <p class="task-question" id="game-question" aria-live="polite">
+            7 + 5 =
+          </p>
+          <output class="answer-display" id="answer-display" aria-live="polite"
+            >_</output
+          >
+
+          <div
+            class="feedback"
+            id="feedback"
+            role="status"
+            aria-live="assertive"
+          ></div>
           <div class="hint" id="hint" hidden></div>
 
-          <!-- Number pad -->
-          <div class="numpad" id="numpad" role="group" aria-label="Zahlen eingeben"></div>
+          <!-- Number pad (typing) -->
+          <div class="numpad-wrap" id="numpad-wrap">
+            <div
+              class="numpad"
+              id="numpad"
+              role="group"
+              aria-label="Zahlen eingeben"
+            ></div>
+          </div>
+
+          <!-- Multiple-choice answer buttons -->
+          <div
+            class="choices"
+            id="choices"
+            role="group"
+            aria-label="Antworten"
+            hidden
+          ></div>
 
           <div class="task-actions">
             <button class="btn btn--hint" data-action="hint">
               <span class="btn-emoji" aria-hidden="true">💡</span>
               <span data-i18n="btn_hint">Tipp</span>
             </button>
-            <button class="btn btn--primary btn--check" data-action="check" data-i18n="btn_check">
+            <button
+              class="btn btn--primary btn--check"
+              data-action="check"
+              data-i18n="btn_check"
+            >
               Prüfen
             </button>
           </div>
@@ -230,27 +419,70 @@
         aria-labelledby="summary-title"
       >
         <div class="card card--centered">
-          <div class="chest" id="chest" role="button" tabindex="0" aria-label="Truhe öffnen">
+          <div
+            class="chest"
+            id="chest"
+            role="button"
+            tabindex="0"
+            aria-label="Truhe öffnen"
+          >
             <div class="chest-emoji">🧰</div>
             <span class="chest-shine" aria-hidden="true"></span>
           </div>
           <h2 id="summary-title" data-i18n="run_complete">Reise geschafft!</h2>
-          <p class="treasure-line" id="treasure-line" data-i18n="treasure_found">
+          <p
+            class="treasure-line"
+            id="treasure-line"
+            data-i18n="treasure_found"
+          >
             Du hast den Schatz gefunden!
           </p>
 
           <div class="summary-grid">
-            <div class="summary-tile"><span class="summary-num" id="sum-stars">0</span><span class="summary-lbl" data-i18n="lbl_stars">Sterne</span></div>
-            <div class="summary-tile"><span class="summary-num" id="sum-coins">0</span><span class="summary-lbl" data-i18n="lbl_coins">Münzen</span></div>
-            <div class="summary-tile"><span class="summary-num" id="sum-accuracy">0%</span><span class="summary-lbl" data-i18n="lbl_accuracy">Treffer</span></div>
-            <div class="summary-tile"><span class="summary-num" id="sum-streak">0</span><span class="summary-lbl" data-i18n="lbl_best_streak">Beste Serie</span></div>
+            <div class="summary-tile">
+              <span class="summary-num" id="sum-stars">0</span
+              ><span class="summary-lbl" data-i18n="lbl_stars">Sterne</span>
+            </div>
+            <div class="summary-tile">
+              <span class="summary-num" id="sum-coins">0</span
+              ><span class="summary-lbl" data-i18n="lbl_coins">Münzen</span>
+            </div>
+            <div class="summary-tile">
+              <span class="summary-num" id="sum-accuracy">0%</span
+              ><span class="summary-lbl" data-i18n="lbl_accuracy">Treffer</span>
+            </div>
+            <div class="summary-tile">
+              <span class="summary-num" id="sum-streak">0</span
+              ><span class="summary-lbl" data-i18n="lbl_best_streak"
+                >Beste Serie</span
+              >
+            </div>
           </div>
 
           <div class="badge-shelf" id="badge-shelf" aria-live="polite"></div>
 
+          <div class="review-box" id="review-box" hidden>
+            <h3 class="review-title" data-i18n="review_title">
+              Das üben wir nochmal
+            </h3>
+            <ul class="review-list" id="review-list"></ul>
+          </div>
+
           <div class="menu-buttons">
-            <button class="btn btn--primary btn--xl" data-action="play-again" data-i18n="play_again">Neue Reise</button>
-            <button class="btn btn--secondary" data-action="go-menu" data-i18n="btn_menu">Hauptmenü</button>
+            <button
+              class="btn btn--primary btn--xl"
+              data-action="play-again"
+              data-i18n="play_again"
+            >
+              Neue Reise
+            </button>
+            <button
+              class="btn btn--secondary"
+              data-action="go-menu"
+              data-i18n="btn_menu"
+            >
+              Hauptmenü
+            </button>
           </div>
         </div>
       </section>
@@ -289,11 +521,32 @@
               <span class="switch-track" aria-hidden="true"></span>
             </span>
           </label>
+          <label class="switch-row">
+            <span data-i18n="set_blitz">Blitz-Aufgaben mit Timer</span>
+            <span class="switch">
+              <input type="checkbox" id="toggle-blitz" />
+              <span class="switch-track" aria-hidden="true"></span>
+            </span>
+          </label>
+          <label class="switch-row">
+            <span data-i18n="set_choices">Antwort-Knöpfe statt Tippen</span>
+            <span class="switch">
+              <input type="checkbox" id="toggle-choices" />
+              <span class="switch-track" aria-hidden="true"></span>
+            </span>
+          </label>
 
           <h3 class="section-label" data-i18n="set_lang">Sprache</h3>
-          <div id="settings-language-grid" class="language-grid language-grid--compact"></div>
+          <div
+            id="settings-language-grid"
+            class="language-grid language-grid--compact"
+          ></div>
 
-          <button class="btn btn--danger" data-action="reset" data-i18n="set_reset">
+          <button
+            class="btn btn--danger"
+            data-action="reset"
+            data-i18n="set_reset"
+          >
             Fortschritt zurücksetzen
           </button>
         </div>
@@ -313,9 +566,18 @@
           <h2 id="howto-title" data-i18n="howto_title">So wird gespielt</h2>
           <p class="howto-body" data-i18n="howto_body"></p>
           <ul class="howto-list">
-            <li><span aria-hidden="true">➕</span> <span data-i18n="m_add_desc"></span></li>
-            <li><span aria-hidden="true">➖</span> <span data-i18n="m_sub_desc"></span></li>
-            <li><span aria-hidden="true">✖️</span> <span data-i18n="m_mul_desc"></span></li>
+            <li>
+              <span aria-hidden="true">➕</span>
+              <span data-i18n="m_add_desc"></span>
+            </li>
+            <li>
+              <span aria-hidden="true">➖</span>
+              <span data-i18n="m_sub_desc"></span>
+            </li>
+            <li>
+              <span aria-hidden="true">✖️</span>
+              <span data-i18n="m_mul_desc"></span>
+            </li>
           </ul>
         </div>
       </section>
@@ -326,8 +588,20 @@
       <div class="card card--centered overlay-card">
         <h2 data-i18n="paused">Pause</h2>
         <div class="menu-buttons">
-          <button class="btn btn--primary btn--xl" data-action="resume" data-i18n="btn_resume">Weiter</button>
-          <button class="btn btn--secondary" data-action="quit" data-i18n="btn_quit">Beenden</button>
+          <button
+            class="btn btn--primary btn--xl"
+            data-action="resume"
+            data-i18n="btn_resume"
+          >
+            Weiter
+          </button>
+          <button
+            class="btn btn--secondary"
+            data-action="quit"
+            data-i18n="btn_quit"
+          >
+            Beenden
+          </button>
         </div>
       </div>
     </div>
