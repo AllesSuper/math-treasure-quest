@@ -1,0 +1,62 @@
+name: "\U0001F41B Bug report"
+description: "Report something that is not working as expected."
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! 💛
+        Please fill in the details below so we can reproduce and fix it quickly.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear and concise description of the bug.
+      placeholder: "When I tapped Check, the answer was marked wrong even though it was correct."
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: How can we make the bug happen?
+      placeholder: |
+        1. Open the app
+        2. Choose Multiplication
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen instead?
+    validations:
+      required: true
+  - type: dropdown
+    id: device
+    attributes:
+      label: Device
+      options:
+        - iPad (Safari)
+        - iPhone (Safari)
+        - Desktop (Chrome)
+        - Desktop (Firefox)
+        - Desktop (Safari)
+        - Android (Chrome)
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: language
+    attributes:
+      label: Selected language
+      placeholder: "Deutsch"
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Confirmation
+      options:
+        - label: I searched existing issues and this has not been reported yet.
+          required: true

@@ -1,0 +1,36 @@
+name: Quality checks
+
+# Basic validation: syntax check the JavaScript, validate JSON, run the math
+# range tests, and check formatting. No app dependencies are installed.
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Check JavaScript syntax
+        run: |
+          node --check app.js
+          node --check service-worker.js
+
+      - name: Validate JSON files
+        run: node scripts/validate-json.js
+
+      - name: Run math range tests
+        run: node tests/math.test.js
+
+      - name: Check formatting
+        run: npx --yes prettier --check "**/*.{js,css,json,md,html}"
