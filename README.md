@@ -21,10 +21,8 @@ frameworks, no build step, no external requests.
 
 ## 🔗 Live demo
 
-**Play it here:** `https://USERNAME.github.io/math-treasure-quest/`
+**Play it here:** `https://AllesSuper.github.io/math-treasure-quest/`
 
-> Replace `USERNAME` with your GitHub username once GitHub Pages is enabled
-> (see the deployment guide below).
 
 ---
 
