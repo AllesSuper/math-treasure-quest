@@ -1,45 +1,137 @@
-# 🗺️ Math Treasure Quest
+# 🏆 Math Treasure Quest
 
-> **Turn 2nd-grade math practice into a treasure-hunting adventure — right on the iPad, fully offline, no ads, no tracking.**
+A fun and educational treasure-hunting adventure that helps children practice mathematics while exploring an exciting journey toward hidden treasures.
 
-[![Deploy to GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-deploy-blue?logo=githubpages)](https://github.com/USERNAME/math-treasure-quest/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![PWA](https://img.shields.io/badge/PWA-installable-5a0fc8?logo=pwa)](manifest.json)
-[![Vanilla JS](https://img.shields.io/badge/Vanilla-JS-f7df1e?logo=javascript&logoColor=black)](app.js)
-[![No dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](package.json)
+🌍 Multi-language support • 📱 Tablet friendly • 🔒 Privacy friendly • 📶 Offline capable • 🎮 Gamified learning
 
-Math Treasure Quest (in-app name: **Mathe-Schatzreise**) is a playful, offline-capable web
-app that helps young children practice **addition, subtraction and the times
-tables**. Kids travel across an adventure map, solve one task per station, and
-open a glittering treasure chest at the end of every run.
-
-The interface speaks the child's language (16 languages, German first) while the
-math stays universal. Built with **plain HTML, CSS and JavaScript** — no
-frameworks, no build step, no external requests.
+**Live Demo:** https://allessuper.github.io/math-treasure-quest/
 
 ---
 
-## 🔗 Live demo
+<p align="center">
+  <img src="docs/start-screen.jpg" width="30%">
+  <img src="docs/gameplay-question.jpg" width="30%">
+  <img src="docs/treasure-reward.jpg" width="30%">
+</p>
 
-**Play it here:** `https://AllesSuper.github.io/math-treasure-quest/`
+---
 
+## ✨ Features
+
+* ➕ Addition (0–100)
+* ➖ Subtraction (0–100)
+* ✖️ Multiplication (1×1 to 10×11)
+* 🗺️ Adventure-based progression system
+* 💎 Unique treasure reward at the end of each journey
+* 🌍 Multiple languages
+* 📱 Optimized for tablets and desktop devices
+* 🔒 No ads
+* 🔒 No tracking
+* 🔒 No account required
+* 📶 Works offline as a Progressive Web App (PWA)
 
 ---
 
 ## 📸 Screenshots
 
-> Add your own screenshots or a short GIF here once you run the app.
+### 🏠 Start Screen
 
-| Language picker | Adventure map | Treasure reward |
-| --------------- | ------------- | --------------- |
-| _screenshot_    | _screenshot_  | _screenshot_    |
+Choose your adventure and begin your treasure hunt.
 
+![Start Screen](docs/start-screen.jpg)
+
+---
+
+### ⚙️ Game Setup
+
+Select math type, difficulty and optional timer mode.
+
+![Game Setup](docs/game-setup.jpg)
+
+---
+
+### 🗺️ Adventure Map
+
+Travel across the island and progress toward the hidden treasure.
+
+![Adventure Map](docs/gameplay-map.jpg)
+
+---
+
+### ➕ Solve Math Challenges
+
+Answer addition, subtraction and multiplication tasks to advance.
+
+![Math Challenge](docs/gameplay-question.jpg)
+
+---
+
+### 💎 Treasure Reward
+
+Reach the treasure and discover a unique reward at the end of every journey.
+
+![Treasure Reward](docs/treasure-reward.jpg)
+
+---
+
+### 🌍 Multi-Language Support
+
+Choose from many languages including German, English, Spanish, French, Italian and more.
+
+![Language Selection](docs/language-selection.jpg)
+
+---
+
+## 🎯 Educational Goals
+
+Math Treasure Quest was designed to make practicing mathematics fun and motivating for young learners.
+
+Children improve:
+
+* Mental arithmetic
+* Problem solving
+* Concentration
+* Confidence with numbers
+* Learning persistence through positive rewards
+
+---
+
+## 🚀 Getting Started
+
+### Play Online
+
+Visit:
+
+https://allessuper.github.io/math-treasure-quest/
+
+### Run Locally
+
+```bash
+git clone https://github.com/AllesSuper/math-treasure-quest.git
+cd math-treasure-quest
 ```
-docs/
-  screenshot-language.png
-  screenshot-game.png
-  screenshot-treasure.png
+
+Then open:
+
+```text
+index.html
 ```
+
+in your browser.
+
+---
+
+## 🤝 Contributing
+
+Contributions, suggestions and feedback are welcome.
+
+If you enjoy the project, consider giving it a ⭐ on GitHub.
+
+---
+
+## 📜 License
+
+MIT License
 
 ---
 
