@@ -36,7 +36,8 @@ Please keep these in mind for any change:
 4. **Accessible and touch-first.** Large targets, high contrast, keyboard
    support, `prefers-reduced-motion` respected.
 5. **Math stays in range.** Addition sums ≤ 100, subtraction never negative in
-   normal play, multiplication within 1×1–10×11.
+   normal play, multiplication with both factors 2–10, division with dividend
+   ≤100, divisor 2–10 and integer quotient 1–10 (no remainder).
 6. **German is the fallback language.** Missing translation keys must fall back
    to German.
 
@@ -63,6 +64,12 @@ npm test
 
 These tests verify that generated tasks always stay within the allowed ranges.
 Please add a test when you change math generation.
+
+`npm test` includes seeded stress tests across 33 adaptive difficulty steps,
+learning persistence helpers, timer boundaries and service worker behavior.
+Run `npm ci`, `npx playwright install chromium`, then `npm run test:browser` for
+the browser regression suite, including shop, rewards, navigation and offline
+reload. Run `npm run validate` and `npm run format:check` before opening a PR.
 
 ## Commit messages
 

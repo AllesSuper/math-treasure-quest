@@ -18,17 +18,18 @@ A fun and educational treasure-hunting adventure that helps children practice ma
 
 ## ✨ Features
 
-* ➕ Addition (0–100)
-* ➖ Subtraction (0–100)
-* ✖️ Multiplication (1×1 to 10×11)
-* 🗺️ Adventure-based progression system
-* 💎 Unique treasure reward at the end of each journey
-* 🌍 Multiple languages
-* 📱 Optimized for tablets and desktop devices
-* 🔒 No ads
-* 🔒 No tracking
-* 🔒 No account required
-* 📶 Works offline as a Progressive Web App (PWA)
+- ➕ Addition (0–100)
+- ➖ Subtraction (0–100)
+- ✖️ Multiplication (2×2 to 10×10; all 81 factor pairs)
+- ➗ Exact division (dividend ≤100, divisor 2–10, quotient 1–10)
+- 🗺️ Adventure-based progression system
+- 💎 Unique treasure reward at the end of each journey
+- 🌍 Multiple languages
+- 📱 Optimized for tablets and desktop devices
+- 🔒 No ads
+- 🔒 No tracking
+- 🔒 No account required
+- 📶 Works offline as a Progressive Web App (PWA)
 
 ---
 
@@ -60,7 +61,7 @@ Travel across the island and progress toward the hidden treasure.
 
 ### ➕ Solve Math Challenges
 
-Answer addition, subtraction and multiplication tasks to advance.
+Answer addition, subtraction, multiplication and division tasks to advance.
 
 ![Math Challenge](docs/gameplay-question.jpg)
 
@@ -88,11 +89,11 @@ Math Treasure Quest was designed to make practicing mathematics fun and motivati
 
 Children improve:
 
-* Mental arithmetic
-* Problem solving
-* Concentration
-* Confidence with numbers
-* Learning persistence through positive rewards
+- Mental arithmetic
+- Problem solving
+- Concentration
+- Confidence with numbers
+- Learning persistence through positive rewards
 
 ---
 
@@ -138,7 +139,7 @@ MIT License
 ## ✨ Feature overview
 
 - 🗺️ **Adventure map** with a moving traveler and visible journey progress.
-- 🧮 **Three math modes** plus a colorful mixed mode.
+- 🧮 **Four math modes** plus a balanced colorful mixed mode.
 - 🎯 **Adaptive difficulty** that grows and eases with the child.
 - 💡 **Helpful hints** appear after a mistake — never punishing, always guiding.
 - ⭐ **Stars, 🔥 streaks, 🪙 coins, 🎖️ badges** and a 💎 **random treasure** each run.
@@ -165,22 +166,44 @@ It is a gift to families, classrooms, and the open-source community.
 ## 🎓 Educational benefits
 
 - Reinforces **number bonds to 100** through repeated, varied practice.
-- Builds **multiplication fluency** with the 1×1 to 10×11 tables.
+- Builds **multiplication fluency** with factors from 2 to 10, and exact division.
 - Encourages a **growth mindset**: mistakes lead to hints, not dead ends.
 - Uses **immediate, encouraging feedback** to keep motivation high.
-- Short ~15-minute runs fit a child's attention span; quick mode fits a spare
-  five minutes.
+- Standard runs have **25 stations**; quick runs have **10 stations**.
 
 ---
 
 ## 🧮 Supported math modes
 
-| Mode               | Range                                   | Notes                                   |
-| ------------------ | --------------------------------------- | --------------------------------------- |
-| ➕ Addition        | 2 or 3 numbers, each 0–100, sum ≤ 100   | Sums never exceed 100.                  |
-| ➖ Subtraction     | 0–100                                   | Result is never negative in normal play.|
-| ✖️ Multiplication  | 1×1 up to 10×11                         | First factor 1–10, second factor 1–11.  |
-| 🌈 Mixed           | All of the above                        | Randomly combined.                      |
+| Mode              | Range                                      | Notes                                    |
+| ----------------- | ------------------------------------------ | ---------------------------------------- |
+| ➕ Addition       | 2 or 3 numbers, each 0–100, sum ≤ 100      | Sums never exceed 100.                   |
+| ➖ Subtraction    | 0–100                                      | Result is never negative in normal play. |
+| ✖️ Multiplication | 2×2 up to 10×10                            | Both factors 2–10; all 81 pairs.         |
+| ➗ Division       | Dividend ≤100, divisor 2–10, quotient 1–10 | Whole numbers, no remainder.             |
+| 🌈 Mixed          | All four operations                        | Station counts differ by at most one.    |
+
+### Learning at the start of third grade
+
+New learners start with sums and starting numbers up to 20 and small factors
+2–4. Adaptive learning is saved separately for each operation in the existing
+`ms_progress.learning` record. Four correct answers increase that operation's
+rating by 0.125 (levels 1–5); a mistake or timeout reduces it by 0.125 and clears
+the success counter. A Joker does not increase learning. Existing coins, stars,
+badges, treasure collections, companions and settings are retained.
+
+Timers and Blitz tasks default to off for new installations; existing choices
+are respected. Each concrete task determines its starting time: multiplication
+6–20 seconds, division 10–30 seconds, addition/subtraction 12–40 seconds. A small
+allowance for a slower pace stays within those bounds. Stars still buy +10
+seconds and the Extra time power-up adds +5 seconds. Purchased time survives
+pause/resume and never changes the next task's starting budget.
+
+Every five solved tasks the mascot celebrates a milestone. Mistakes retain the
+original setback and shield mechanics and show intermediate calculations;
+division also shows the inverse multiplication, e.g. `56 ÷ 7 = 8, because
+7 × 8 = 56`. Setbacks revisit the operation planned for that station, so extra
+practice attempts can differ from the balanced distribution of map stations.
 
 ---
 
@@ -218,11 +241,20 @@ Useful scripts (see `package.json`):
 ```bash
 npm start      # serve the app locally
 npm test       # run the math range/validation tests
+npm run validate # syntax and JSON validation
+npm ci
+npx playwright install chromium
+npm run test:browser # real browser, shop, rewards, storage, mobile and offline
 npm run format # format files with Prettier
 ```
 
 > Service workers require `http://localhost` or HTTPS. Opening `index.html`
 > directly via `file://` disables offline caching but the game still runs.
+
+Browser tests also support `TEST_BROWSER=firefox` or `webkit` after installing
+that Playwright browser. On Windows, `BROWSER_CHANNEL=msedge` uses installed
+Edge. The app has no runtime dependencies; Playwright and Prettier are dev-only.
+See [docs/TEST_REPORT.md](docs/TEST_REPORT.md) for the verification record.
 
 ---
 

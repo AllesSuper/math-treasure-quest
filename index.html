@@ -9,7 +9,7 @@
     <title>Mathe-Schatzreise</title>
     <meta
       name="description"
-      content="Mathe-Schatzreise: ein offline-faehiges Mathe-Abenteuer fuer die 2. Klasse."
+      content="Mathe-Schatzreise: ein offline-faehiges Mathe-Abenteuer fuer die 3. Klasse."
     />
 
     <!-- PWA configuration -->
@@ -162,6 +162,18 @@
             </button>
             <button
               class="mode-card"
+              data-mode="div"
+              role="radio"
+              aria-checked="false"
+            >
+              <span class="mode-emoji" aria-hidden="true">➗</span>
+              <span class="mode-name" data-i18n="m_div">Geteilt-Rechnen</span>
+              <span class="mode-desc" data-i18n="m_div_desc"
+                >Teile ohne Rest: bis 100 durch 2 bis 10.</span
+              >
+            </button>
+            <button
+              class="mode-card"
               data-mode="mix"
               role="radio"
               aria-checked="false"
@@ -169,7 +181,7 @@
               <span class="mode-emoji" aria-hidden="true">🌈</span>
               <span class="mode-name" data-i18n="m_mix">Bunte Mischung</span>
               <span class="mode-desc" data-i18n="m_mix_desc"
-                >Alles wild gemischt.</span
+                >Alle vier Rechenarten ausgewogen gemischt.</span
               >
             </button>
           </div>
@@ -315,7 +327,7 @@
             id="map-progress"
             data-i18n-tpl="station_progress"
           >
-            Station 1 von 18
+            Station 1 von 25
           </p>
         </div>
 
@@ -556,6 +568,10 @@
             <li>
               <span aria-hidden="true">✖️</span>
               <span data-i18n="m_mul_desc"></span>
+            </li>
+            <li>
+              <span aria-hidden="true">➗</span>
+              <span data-i18n="m_div_desc"></span>
             </li>
           </ul>
         </div>

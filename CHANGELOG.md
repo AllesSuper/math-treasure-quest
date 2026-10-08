@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Third-grade division with exact quotients and inverse multiplication solutions.
+- Separate local learning records for all four operations, gentle adaptive steps,
+  and translated milestone praise in all 16 languages.
+- Seeded curriculum stress tests, learning/timer boundaries, offline cache tests
+  and real-browser regression checks for rewards, shop, navigation and storage.
+- Extra time shop item exposing the existing +5-second power-up.
+
+### Changed
+
+- Standard rounds now contain 25 stations; quick rounds retain 10. Mixed map
+  stations distribute all four operations with counts differing by at most one.
+- Multiplication factors are 2–10; answer validation and distractors use the
+  corresponding answer ranges. Easy arithmetic starts within 20.
+- Actual task operands determine starting timer budgets (multiplication 6–20s,
+  division 10–30s, addition/subtraction 12–40s). Timers default off for new users.
+- PWA cache version v3 and third-grade metadata; old storage fields retained.
+
+### Fixed
+
+- Extra time survives pause/resume, and solution screens do not restart timers.
+- Navigation cancels pending task transitions; solved tasks cannot reuse a Joker.
+- Addition/subtraction explanations include intermediate steps after mistakes.
+
 ### Planned
 
 - Parent dashboard with progress overview

@@ -1,7 +1,7 @@
 {
   "name": "math-treasure-quest",
-  "version": "1.2.0",
-  "description": "An offline-capable, iPad-friendly math adventure PWA for 2nd-grade children. Vanilla JS, no dependencies, no tracking.",
+  "version": "1.3.0",
+  "description": "An offline-capable, iPad-friendly math adventure PWA for 3rd-grade children. Vanilla JS, no dependencies, no tracking.",
   "keywords": [
     "education",
     "math",
@@ -17,7 +17,8 @@
   "scripts": {
     "start": "npx --yes http-server . -p 8080 -c-1",
     "serve": "python3 -m http.server 8080",
-    "test": "node tests/math.test.js",
+    "test": "node tests/math.test.js && node tests/learning.test.js && node tests/offline.test.js",
+    "test:browser": "node tests/browser.test.js",
     "format": "npx --yes prettier --write '**/*.{js,css,json,md,html}'",
     "format:check": "npx --yes prettier --check '**/*.{js,css,json,md,html}'",
     "validate:json": "node scripts/validate-json.js",
@@ -31,5 +32,9 @@
     "url": "https://github.com/AllesSuper/math-treasure-quest/issues"
   },
   "homepage": "https://allessuper.github.io/math-treasure-quest/",
-  "private": false
+  "private": false,
+  "devDependencies": {
+    "playwright": "1.62.1",
+    "prettier": "3.6.2"
+  }
 }

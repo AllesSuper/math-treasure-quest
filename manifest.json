@@ -1,7 +1,7 @@
 {
   "name": "Mathe-Schatzreise",
   "short_name": "Schatzreise",
-  "description": "Ein offline-fähiges Mathe-Abenteuer für die 2. Klasse: Plus, Minus und Einmaleins entdecken und Schätze finden.",
+  "description": "Ein offline-fähiges Mathe-Abenteuer für die 3. Klasse: Plus, Minus, Mal und Geteilt entdecken und Schätze finden.",
   "lang": "de",
   "dir": "auto",
   "start_url": "./index.html",

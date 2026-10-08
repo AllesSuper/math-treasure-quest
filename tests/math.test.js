@@ -58,14 +58,14 @@ levels.forEach(function (level) {
   }
 });
 
-section("Multiplication stays within range (1..10 x 1..11)");
+section("Multiplication stays within range (2..10 x 2..10)");
 levels.forEach(function (level) {
   for (var i = 0; i < ITERATIONS; i++) {
     var task = app.generateMultiplication(level);
     var f1 = task.operands[0];
     var f2 = task.operands[1];
-    assert(f1 >= 1 && f1 <= 10, "first factor within 1..10");
-    assert(f2 >= 1 && f2 <= 11, "second factor within 1..11");
+    assert(f1 >= 2 && f1 <= 10, "first factor within 2..10");
+    assert(f2 >= 2 && f2 <= 10, "second factor within 2..10");
     assert(f1 * f2 === task.answer, "multiplication answer is correct");
     assert(app.validateTask(task), "multiplication passes validateTask");
   }
@@ -114,7 +114,7 @@ levels.forEach(function (level) {
     choices.forEach(function (c) {
       if (unique[c]) allUnique = false;
       unique[c] = true;
-      if (!Number.isInteger(c) || c < 0) allValid = false;
+      if (!app.validateAnswer(task, c)) allValid = false;
     });
     assert(allUnique, "choices are all unique");
     assert(allValid, "choices are non-negative integers");

@@ -186,6 +186,7 @@ var I18N = {
     next_task: "Weiter ➜",
     buy_time: "+10 Sekunden für 3 Sterne",
     time_added_10: "+10 Sekunden!",
+    time_added: "+5 Sekunden!",
     time_only_timed: "Nur bei Aufgaben mit Timer",
     not_enough_stars: "Zu wenig Sterne",
     btn_shop: "Laden",
@@ -276,6 +277,7 @@ var I18N = {
     next_task: "Next ➜",
     buy_time: "+10 seconds for 3 stars",
     time_added_10: "+10 seconds!",
+    time_added: "+5 seconds!",
     time_only_timed: "Only on timed tasks",
     not_enough_stars: "Not enough stars",
     btn_shop: "Shop",
@@ -1122,6 +1124,130 @@ var I18N = {
   },
 };
 
+// Third-grade additions for every supported language, preserving old strings.
+var LEARNING_TEXT = {
+  de: [
+    "Geteilt-Rechnen",
+    "Teile ohne Rest: bis 100 durch 2 bis 10.",
+    "Alle vier Rechenarten ausgewogen gemischt.",
+    "Schon {n} Aufgaben geschafft! Weiter so!",
+    "denn",
+  ],
+  en: [
+    "Division",
+    "Divide exactly: up to 100 by 2 to 10.",
+    "A balanced mix of all four operations.",
+    "You solved {n} tasks! Keep going!",
+    "because",
+  ],
+  es: [
+    "División",
+    "Divide sin resto: hasta 100 entre 2 y 10.",
+    "Las cuatro operaciones equilibradas.",
+    "¡Ya resolviste {n} tareas! ¡Sigue así!",
+    "porque",
+  ],
+  fr: [
+    "Divisions",
+    "Divise sans reste : jusqu’à 100 par 2 à 10.",
+    "Les quatre opérations bien réparties.",
+    "Déjà {n} calculs réussis ! Continue !",
+    "car",
+  ],
+  it: [
+    "Divisioni",
+    "Dividi senza resto: fino a 100 per 2–10.",
+    "Le quattro operazioni in equilibrio.",
+    "Hai risolto {n} calcoli! Continua così!",
+    "perché",
+  ],
+  pt: [
+    "Divisão",
+    "Divide sem resto: até 100 por 2 a 10.",
+    "As quatro operações equilibradas.",
+    "Já resolveste {n} tarefas! Continua!",
+    "porque",
+  ],
+  nl: [
+    "Delen",
+    "Deel zonder rest: tot 100 door 2 tot 10.",
+    "Alle vier bewerkingen evenwichtig gemengd.",
+    "Al {n} sommen opgelost! Ga zo door!",
+    "want",
+  ],
+  pl: [
+    "Dzielenie",
+    "Dziel bez reszty: do 100 przez 2–10.",
+    "Wszystkie cztery działania w równowadze.",
+    "Już {n} zadań rozwiązanych! Tak trzymaj!",
+    "ponieważ",
+  ],
+  uk: [
+    "Ділення",
+    "Діли без остачі: до 100 на числа 2–10.",
+    "Рівномірна суміш чотирьох дій.",
+    "Уже {n} завдань розв’язано! Так тримати!",
+    "тому що",
+  ],
+  ru: [
+    "Деление",
+    "Дели без остатка: до 100 на числа 2–10.",
+    "Все четыре действия поровну.",
+    "Уже {n} заданий решено! Продолжай!",
+    "потому что",
+  ],
+  tr: [
+    "Bölme",
+    "Kalansız böl: 100’e kadar, bölen 2–10.",
+    "Dört işlem dengeli bir karışımda.",
+    "{n} soru çözdün! Devam et!",
+    "çünkü",
+  ],
+  ar: [
+    "القسمة",
+    "قسمة دون باقٍ: حتى 100 على 2 إلى 10.",
+    "مزيج متوازن من العمليات الأربع.",
+    "حللت {n} مسائل! واصل!",
+    "لأن",
+  ],
+  hi: [
+    "भाग",
+    "बिना शेष भाग: 100 तक, भाजक 2 से 10।",
+    "चारों संक्रियाओं का संतुलित मिश्रण।",
+    "तुमने {n} प्रश्न हल किए! आगे बढ़ो!",
+    "क्योंकि",
+  ],
+  zh: [
+    "除法",
+    "整除：100以内，除数为2至10。",
+    "均衡练习四种运算。",
+    "已完成{n}道题！继续加油！",
+    "因为",
+  ],
+  ja: [
+    "割り算",
+    "余りなし：100まで、割る数は2から10。",
+    "4種類の計算をバランスよく。",
+    "{n}問できたね！その調子！",
+    "なぜなら",
+  ],
+  ko: [
+    "나눗셈",
+    "나머지 없이: 100까지, 나누는 수는 2–10.",
+    "네 가지 연산을 골고루 연습해요.",
+    "벌써 {n}문제 해결! 계속해요!",
+    "왜냐하면",
+  ],
+};
+Object.keys(LEARNING_TEXT).forEach(function (code) {
+  var strings = LEARNING_TEXT[code];
+  I18N[code].m_div = strings[0];
+  I18N[code].m_div_desc = strings[1];
+  I18N[code].m_mix_desc = strings[2];
+  I18N[code].milestone = strings[3];
+  I18N[code].division_because = strings[4];
+});
+
 // Badge labels are intentionally kept in German + English only; other
 // languages fall back to German per the documented fallback rule.
 var BADGE_LABELS = {
@@ -1168,18 +1294,18 @@ var MAX_LEVEL = 5;
  */
 function generateAddition(level) {
   level = clamp(level || 1, MIN_LEVEL, MAX_LEVEL);
+  var maxSum = Math.round(20 + (level - 1) * 20);
   var useThree = level >= 3 && Math.random() < (level >= 4 ? 0.6 : 0.35);
   var operands;
   if (useThree) {
     var capA = Math.min(40, 8 + level * 7);
-    var a = randInt(0, capA);
-    var b = randInt(0, Math.min(40, 100 - a));
-    var c = randInt(0, 100 - a - b);
+    var a = randInt(0, Math.min(capA, maxSum));
+    var b = randInt(0, Math.min(40, maxSum - a));
+    var c = randInt(0, maxSum - a - b);
     operands = [a, b, c];
   } else {
-    var maxFirst = Math.min(100, 18 + level * 16);
-    var x = randInt(0, maxFirst);
-    var y = randInt(0, 100 - x);
+    var x = randInt(0, maxSum);
+    var y = randInt(0, maxSum - x);
     operands = [x, y];
   }
   var answer = operands.reduce(function (sum, n) {
@@ -1199,7 +1325,7 @@ function generateAddition(level) {
  */
 function generateSubtraction(level) {
   level = clamp(level || 1, MIN_LEVEL, MAX_LEVEL);
-  var maxValue = Math.min(100, 20 + level * 16);
+  var maxValue = Math.round(20 + (level - 1) * 20);
   var a = randInt(level < 2 ? 2 : 10, maxValue);
   var b = randInt(0, a);
   return {
@@ -1211,14 +1337,13 @@ function generateSubtraction(level) {
 }
 
 /*
- * Multiplication from 1x1 to 10x11: first factor 1..10, second factor 1..11.
+ * Multiplication with factors 2..10; introduce larger factors gradually.
  */
 function generateMultiplication(level) {
   level = clamp(level || 1, MIN_LEVEL, MAX_LEVEL);
-  // Cover the complete times tables at random: every fact from 1×1 up to
-  // 10×11 can appear regardless of level, so the whole 1x1 gets practised.
-  var a = randInt(1, 10);
-  var b = randInt(1, 11);
+  var maxFactor = Math.floor(4 + (level - 1) * 1.5);
+  var a = randInt(2, maxFactor);
+  var b = randInt(2, maxFactor);
   return {
     type: "mul",
     operands: [a, b],
@@ -1227,21 +1352,64 @@ function generateMultiplication(level) {
   };
 }
 
-// Pick a generator for the chosen mode ("add", "sub", "mul" or "mix").
+// Generate exact division using a divisor and quotient, never a remainder.
+function generateDivision(level) {
+  level = clamp(level || 1, MIN_LEVEL, MAX_LEVEL);
+  var maxFactor = Math.floor(4 + (level - 1) * 1.5);
+  var divisor = randInt(2, maxFactor);
+  var quotient = randInt(1, maxFactor);
+  var dividend = divisor * quotient;
+  return {
+    type: "div",
+    operands: [dividend, divisor],
+    text: dividend + " ÷ " + divisor + " =",
+    answer: quotient,
+  };
+}
+
+var MATH_MODES = ["add", "sub", "mul", "div"];
+
+// Balanced station plan, also used when a setback revisits a station.
+function createRoundModes(mode, total) {
+  var plan = [];
+  var pool = MATH_MODES.slice();
+  for (var i = pool.length - 1; i > 0; i--) {
+    var j = randInt(0, i);
+    var tmp = pool[i];
+    pool[i] = pool[j];
+    pool[j] = tmp;
+  }
+  for (var n = 0; n < total; n++) {
+    plan.push(mode === "mix" ? pool[n % pool.length] : mode);
+  }
+  for (var k = plan.length - 1; k > 0; k--) {
+    var r = randInt(0, k);
+    var value = plan[k];
+    plan[k] = plan[r];
+    plan[r] = value;
+  }
+  return plan;
+}
+
+// Pick a generator for the chosen mode.
 function generateTask(mode, level) {
   var effectiveMode = mode;
   if (mode === "mix") {
-    var pool = ["add", "sub", "mul"];
+    var pool = MATH_MODES;
     effectiveMode = pool[randInt(0, pool.length - 1)];
   }
   if (effectiveMode === "sub") return generateSubtraction(level);
   if (effectiveMode === "mul") return generateMultiplication(level);
+  if (effectiveMode === "div") return generateDivision(level);
   return generateAddition(level);
 }
 
 // Internal validation helper: confirms a task stays within allowed ranges.
 function validateTask(task) {
-  if (!task || typeof task.answer !== "number") return false;
+  if (!task || !Number.isInteger(task.answer) || !Array.isArray(task.operands))
+    return false;
+  if (!task.operands.every(Number.isInteger)) return false;
+  if (task.type !== "add" && task.operands.length !== 2) return false;
   if (task.type === "add") {
     if (task.operands.length !== 2 && task.operands.length !== 3) return false;
     var inRange = task.operands.every(function (n) {
@@ -1268,7 +1436,21 @@ function validateTask(task) {
     var f1 = task.operands[0];
     var f2 = task.operands[1];
     return (
-      f1 >= 1 && f1 <= 10 && f2 >= 1 && f2 <= 11 && f1 * f2 === task.answer
+      f1 >= 2 && f1 <= 10 && f2 >= 2 && f2 <= 10 && f1 * f2 === task.answer
+    );
+  }
+  if (task.type === "div") {
+    var dividend = task.operands[0];
+    var divisor = task.operands[1];
+    return (
+      dividend >= 1 &&
+      dividend <= 100 &&
+      divisor >= 2 &&
+      divisor <= 10 &&
+      task.answer >= 1 &&
+      task.answer <= 10 &&
+      dividend % divisor === 0 &&
+      dividend / divisor === task.answer
     );
   }
   return false;
@@ -1276,6 +1458,7 @@ function validateTask(task) {
 
 // Build a short, child-friendly hint for a task (numbers are language-neutral).
 function buildHint(task) {
+  if (task.type === "div") return buildSolution(task);
   if (task.type === "add") {
     if (task.operands.length === 3) {
       var partial = task.operands[0] + task.operands[1];
@@ -1338,6 +1521,7 @@ function buildHint(task) {
 function generateChoices(task, count) {
   count = clamp(count || 4, 4, 8);
   var correct = task.answer;
+  var range = answerRange(task);
   var choices = [correct];
   var a = task.operands[0];
   var b = task.operands.length > 1 ? task.operands[1] : 0;
@@ -1365,12 +1549,17 @@ function generateChoices(task, count) {
       candidate = Math.random() < 0.5 ? correct - delta : correct + delta;
     }
     if (candidate < 0) candidate = Math.abs(candidate);
-    if (choices.indexOf(candidate) === -1) choices.push(candidate);
+    if (
+      candidate >= range.min &&
+      candidate <= range.max &&
+      choices.indexOf(candidate) === -1
+    )
+      choices.push(candidate);
   }
-  // Pad with near values if we could not find enough (very small answers).
-  var pad = 1;
+  // Pad from the valid answer domain if nearby values were exhausted.
+  var pad = range.min;
   while (choices.length < count) {
-    var v = correct + pad;
+    var v = pad;
     if (choices.indexOf(v) === -1) choices.push(v);
     pad++;
   }
@@ -1396,7 +1585,34 @@ function choiceCountForLevel(level) {
  * faster the average drops and the budget shrinks, so it evolves over time.
  * Pure + testable.
  */
-function computeTimeBudget(avgMs, level) {
+function computeTimeBudget(avgMs, level, task) {
+  if (task && validateTask(task)) {
+    var a = task.operands[0];
+    var b = task.operands[1];
+    var pace = clamp((avgMs || 0) / 1000 - 8, 0, 4);
+    if (task.type === "mul")
+      return clamp(Math.round(6 + (14 * (a + b - 4)) / 16 + pace), 6, 20);
+    if (task.type === "div")
+      return clamp(
+        Math.round(10 + (20 * (b + task.answer - 3)) / 17 + pace),
+        10,
+        30,
+      );
+    var magnitude = task.type === "add" ? task.answer : a;
+    var crossing =
+      task.type === "add" ? (a % 10) + (b % 10) >= 10 : a % 10 < b % 10;
+    return clamp(
+      Math.round(
+        12 +
+          magnitude / 6 +
+          (crossing ? 4 : 0) +
+          (task.operands.length === 3 ? 4 : 0) +
+          pace,
+      ),
+      12,
+      40,
+    );
+  }
   level = clamp(level || 1, MIN_LEVEL, MAX_LEVEL);
   var base = avgMs && avgMs > 0 ? avgMs / 1000 : 11;
   var budget = base * 1.7 + 3 + (level - 1) * 1.2;
@@ -1409,6 +1625,151 @@ function updateAvgMs(prevAvg, sampleMs) {
   sampleMs = clamp(sampleMs, 600, 60000); // ignore absurd outliers
   if (!prevAvg || prevAvg <= 0) return Math.round(sampleMs);
   return Math.round(prevAvg * 0.7 + sampleMs * 0.3);
+}
+
+function answerRange(task) {
+  return task.type === "div"
+    ? { min: 1, max: 10 }
+    : task.type === "mul"
+      ? { min: 4, max: 100 }
+      : { min: 0, max: 100 };
+}
+
+function validateAnswer(task, value) {
+  if (!validateTask(task) || !Number.isInteger(value)) return false;
+  var range = answerRange(task);
+  return value >= range.min && value <= range.max;
+}
+
+// Add learning records without replacing any existing reward/storage fields.
+function normalizeLearning(saved) {
+  var records = {};
+  MATH_MODES.forEach(function (mode) {
+    var old = (saved && saved[mode]) || {};
+    records[mode] = {
+      level: Number.isFinite(old.level) ? clamp(old.level, 1, 5) : 1,
+      successes: Number.isInteger(old.successes)
+        ? clamp(old.successes, 0, 3)
+        : 0,
+      attempts: Number.isInteger(old.attempts) ? Math.max(0, old.attempts) : 0,
+      correct: Number.isInteger(old.correct) ? Math.max(0, old.correct) : 0,
+      avgMs: Number.isFinite(old.avgMs) ? clamp(old.avgMs, 0, 60000) : 0,
+    };
+  });
+  return records;
+}
+
+// Four independent successes raise the rating by just one eighth of a level.
+function updateLearning(record, correct, elapsed) {
+  var next = Object.assign({}, record);
+  next.attempts++;
+  if (correct) {
+    next.correct++;
+    next.successes++;
+    next.avgMs = updateAvgMs(next.avgMs, elapsed);
+    if (next.successes >= 4) {
+      next.level = clamp(next.level + 0.125, 1, 5);
+      next.successes = 0;
+    }
+  } else {
+    next.level = clamp(next.level - 0.125, 1, 5);
+    next.successes = 0;
+  }
+  return next;
+}
+
+// Worked solutions use intermediate steps and the inverse multiplication.
+function buildSolution(task, because) {
+  if (!validateTask(task)) return "";
+  var ops = task.operands;
+  if (task.type === "div") {
+    return (
+      ops[0] +
+      " ÷ " +
+      ops[1] +
+      " = " +
+      task.answer +
+      ", " +
+      (because || "denn") +
+      " " +
+      ops[1] +
+      " × " +
+      task.answer +
+      " = " +
+      ops[0]
+    );
+  }
+  if (task.type === "mul") {
+    var count = Math.min(ops[0], ops[1]);
+    var term = Math.max(ops[0], ops[1]);
+    var parts = [];
+    for (var i = 0; i < count; i++) parts.push(term);
+    return (
+      ops[0] + " × " + ops[1] + " = " + parts.join(" + ") + " = " + task.answer
+    );
+  }
+  if (task.type === "sub") {
+    var tens = Math.floor(ops[1] / 10) * 10;
+    var intermediate = ops[0] - tens;
+    return (
+      ops[0] +
+      " − " +
+      ops[1] +
+      " = " +
+      task.answer +
+      " · " +
+      ops[0] +
+      " − " +
+      tens +
+      " = " +
+      intermediate +
+      ", " +
+      intermediate +
+      " − " +
+      (ops[1] % 10) +
+      " = " +
+      task.answer
+    );
+  }
+  if (ops.length === 3) {
+    var partial = ops[0] + ops[1];
+    return (
+      ops.join(" + ") +
+      " = " +
+      task.answer +
+      " · " +
+      ops[0] +
+      " + " +
+      ops[1] +
+      " = " +
+      partial +
+      ", " +
+      partial +
+      " + " +
+      ops[2] +
+      " = " +
+      task.answer
+    );
+  }
+  var addTens = Math.floor(ops[1] / 10) * 10;
+  var step = ops[0] + addTens;
+  return (
+    ops.join(" + ") +
+    " = " +
+    task.answer +
+    " · " +
+    ops[0] +
+    " + " +
+    addTens +
+    " = " +
+    step +
+    ", " +
+    step +
+    " + " +
+    (ops[1] % 10) +
+    " = " +
+    task.answer
+  );
 }
 
 /* ================================================================== */
@@ -1766,6 +2127,15 @@ function extraTimeForTask(task, level) {
 // cosmetic unlocks for the traveller on the map.
 var SHOP_POWERUPS = [
   {
+    id: "time",
+    price: 8,
+    icon: "⏳",
+    de: "Extra-Zeit",
+    en: "Extra time",
+    deDesc: "+5 Sekunden bei einer Aufgabe mit Timer",
+    enDesc: "+5 seconds on a timed task",
+  },
+  {
     id: "joker",
     price: 10,
     icon: "🪄",
@@ -1832,7 +2202,7 @@ function startApp() {
   var state = {
     lang: storageGet(STORAGE_KEYS.lang, null),
     settings: Object.assign(
-      { sound: true, timer: false, quick: false, blitz: true, choices: true },
+      { sound: true, timer: false, quick: false, blitz: false, choices: true },
       storageGet(STORAGE_KEYS.settings, {}),
     ),
     progress: Object.assign(
@@ -1859,6 +2229,8 @@ function startApp() {
     run: null,
     timerId: null,
   };
+
+  state.progress.learning = normalizeLearning(state.progress.learning);
 
   /* ---------------- i18n ---------------- */
   function t(key, vars) {
@@ -2088,7 +2460,12 @@ function startApp() {
     } else if (item === "del") {
       currentInput = currentInput.slice(0, -1);
     } else if (/^[0-9]$/.test(item)) {
-      if (currentInput.length < 3) currentInput += item; // max answer is 121
+      if (
+        currentInput.length < 3 &&
+        activeTask &&
+        Number(currentInput + item) <= answerRange(activeTask).max
+      )
+        currentInput += item;
     }
     renderAnswer();
   }
@@ -2100,14 +2477,19 @@ function startApp() {
   }
 
   /* ---------------- Adventure run ---------------- */
-  var DIFF_START_LEVEL = { easy: 1, medium: 3, hard: 5, adaptive: 2 };
+  var DIFF_START_LEVEL = { easy: 1, medium: 3, hard: 5, adaptive: 1 };
 
   function startRun() {
-    var total = state.settings.quick ? 10 : 18; // ~15 min for a full run
+    stopTimer();
+    window.clearTimeout(state.nextTaskId);
+    state.awaitingNext = false;
+    var total = state.settings.quick ? 10 : 25;
     state.run = {
       mode: state.selectedMode,
       diff: state.selectedDiff,
-      level: DIFF_START_LEVEL[state.selectedDiff] || 2,
+      level: DIFF_START_LEVEL[state.selectedDiff] || 1,
+      modes: createRoundModes(state.selectedMode, total),
+      milestones: [],
       index: 0,
       total: total,
       correct: 0,
@@ -2225,16 +2607,22 @@ function startApp() {
 
   var activeTask = null;
   function nextTask() {
+    if (!state.run) return;
     if (state.run.index >= state.run.total) {
       finishRun();
       return;
     }
     state.run.attemptsOnCurrent = 0;
-    activeTask = generateTask(state.run.mode, state.run.level);
+    var mode = state.run.modes[state.run.index];
+    state.run.level =
+      state.run.diff === "adaptive"
+        ? state.progress.learning[mode].level
+        : DIFF_START_LEVEL[state.run.diff];
+    activeTask = generateTask(mode, state.run.level);
     // Safety net: regenerate if a task ever falls outside the valid ranges.
     var guard = 0;
     while (!validateTask(activeTask) && guard < 10) {
-      activeTask = generateTask(state.run.mode, state.run.level);
+      activeTask = generateTask(mode, state.run.level);
       guard++;
     }
     // Decide per task whether it is timed (Blitz) and/or multiple choice.
@@ -2255,6 +2643,7 @@ function startApp() {
     updateMapProgressLabel();
     state.run.taskStart = now();
     restartTimer();
+    renderPowerups();
   }
 
   function now() {
@@ -2302,7 +2691,13 @@ function startApp() {
 
   // Shared entry point for both the number pad and the choice buttons.
   function submitAnswer(value, sourceBtn) {
-    if (!activeTask) return;
+    if (
+      !activeTask ||
+      state.awaitingNext ||
+      !els.pauseOverlay.hidden ||
+      !validateAnswer(activeTask, value)
+    )
+      return;
     state.run.attemptsOnCurrent++;
     if (value === activeTask.answer) {
       if (sourceBtn) markChoice(true, sourceBtn);
@@ -2345,6 +2740,7 @@ function startApp() {
       state.progress.avgMs = updateAvgMs(state.progress.avgMs, elapsed);
       state.progress.totalCorrect = (state.progress.totalCorrect || 0) + 1;
     }
+    recordLearning(firstTry, elapsed);
 
     // Modest, predictable economy: roughly one Joker per successful run, two
     // when a strong streak is earned, and a new buddy after about 4-5 runs.
@@ -2380,18 +2776,28 @@ function startApp() {
     beep(660, 140, "triangle");
     stopTimer();
 
-    // Adaptive difficulty: speed up when the child is on a roll.
     if (
-      state.run.diff === "adaptive" &&
-      state.run.streak > 0 &&
-      state.run.streak % 3 === 0
+      state.run.correct % 5 === 0 &&
+      state.run.milestones.indexOf(state.run.correct) === -1
     ) {
-      state.run.level = clamp(state.run.level + 1, MIN_LEVEL, MAX_LEVEL);
+      state.run.milestones.push(state.run.correct);
+      mascotSay(t("milestone", { n: state.run.correct }), "🌟");
     }
 
     state.run.index++;
     moveWalker(state.run.index);
-    window.setTimeout(nextTask, 750);
+    activeTask = null;
+    state.nextTaskId = window.setTimeout(nextTask, 750);
+  }
+
+  function recordLearning(correct, elapsed) {
+    var mode = activeTask.type;
+    state.progress.learning[mode] = updateLearning(
+      state.progress.learning[mode],
+      correct,
+      elapsed,
+    );
+    storageSet(STORAGE_KEYS.progress, state.progress);
   }
 
   function onWrong() {
@@ -2409,10 +2815,7 @@ function startApp() {
     recordMiss();
     // Penalty: a wrong answer sends the traveller back along the path.
     goBackOnMiss(3);
-    // Adaptive difficulty: ease off after a mistake.
-    if (state.run.diff === "adaptive") {
-      state.run.level = clamp(state.run.level - 1, MIN_LEVEL, MAX_LEVEL);
-    }
+    recordLearning(false, 0);
     currentInput = "";
     // Show the worked calculation path; tap it to move to the next task.
     showSolution();
@@ -2447,32 +2850,6 @@ function startApp() {
     }
   }
 
-  // Build a child-friendly worked solution. Multiplication is shown as repeated
-  // addition, the way it is taught in second grade.
-  function buildSolution(task) {
-    if (!task || !task.operands) return "";
-    var ops = task.operands;
-    if (task.type === "mul") {
-      var count = Math.min(ops[0], ops[1]);
-      var term = Math.max(ops[0], ops[1]);
-      var parts = [];
-      for (var i = 0; i < count; i++) parts.push(term);
-      return (
-        ops[0] +
-        " × " +
-        ops[1] +
-        " = " +
-        parts.join(" + ") +
-        " = " +
-        task.answer
-      );
-    }
-    if (task.type === "sub") {
-      return ops[0] + " − " + ops[1] + " = " + task.answer;
-    }
-    return ops.join(" + ") + " = " + task.answer;
-  }
-
   // After a wrong or too-slow answer: reveal the worked path and wait for a tap
   // before moving on (no retries, no separate hint).
   function showSolution() {
@@ -2487,7 +2864,7 @@ function startApp() {
       });
     }
     if (els.hint) {
-      els.hint.textContent = buildSolution(activeTask);
+      els.hint.textContent = buildSolution(activeTask, t("division_because"));
       els.hint.hidden = false;
       els.hint.classList.add("solution");
       els.hint.onclick = advanceAfterWrong;
@@ -2579,20 +2956,21 @@ function startApp() {
   /* ---------------- Adaptive Blitz timer ---------------- */
   // Circumference of the ring (r = 26 -> 2 * pi * 26 ~= 163.36).
   var RING_LEN = 163.36;
-  function restartTimer() {
+  function restartTimer(resume) {
     stopTimer();
     state.timerRemaining = 0;
     if (!activeTask || !activeTask.timed) {
       if (els.timerRing) els.timerRing.hidden = true;
       return;
     }
-    var budget = computeTimeBudget(state.progress.avgMs, state.run.level);
-    // Harder tasks get a little more thinking time than easy ones.
-    budget = clamp(
-      budget + extraTimeForTask(activeTask, state.run.level),
-      6,
-      45,
-    );
+    if (state.awaitingNext) return;
+    var budget = resume
+      ? state.pausedRemaining
+      : computeTimeBudget(
+          state.progress.learning[activeTask.type].avgMs,
+          state.run.level,
+          activeTask,
+        );
     state.timerBudget = budget;
     state.timerRemaining = budget;
     if (els.timerRing) {
@@ -2634,9 +3012,7 @@ function startApp() {
     hideComboTag();
     els.gameStreak.textContent = 0;
     recordMiss();
-    if (state.run.diff === "adaptive") {
-      state.run.level = clamp(state.run.level - 1, MIN_LEVEL, MAX_LEVEL);
-    }
+    recordLearning(false, 0);
     // Too slow on the Blitz timer: send the traveller back along the path.
     goBackOnMiss(3);
     showSolution();
@@ -2956,7 +3332,7 @@ function startApp() {
   // Joker: instantly solve the current task. It keeps the journey moving but
   // does not award a first-try star (it counts as a helped solve).
   function jokerSolve() {
-    if (!activeTask) return false;
+    if (!activeTask || state.awaitingNext) return false;
     stopTimer();
     if (els.choices) {
       els.choices.querySelectorAll(".choice").forEach(function (c) {
@@ -2973,7 +3349,7 @@ function startApp() {
     state.run.index++;
     moveWalker(state.run.index);
     activeTask = null;
-    window.setTimeout(nextTask, 750);
+    state.nextTaskId = window.setTimeout(nextTask, 750);
     return true;
   }
 
@@ -3153,6 +3529,9 @@ function startApp() {
   /* ---------------- Navigation helpers ---------------- */
   function goToMenu() {
     stopTimer();
+    window.clearTimeout(state.nextTaskId);
+    activeTask = null;
+    state.awaitingNext = false;
     state.run = null;
     refreshMenuStats();
     showScreen("screen-menu");
@@ -3233,6 +3612,7 @@ function startApp() {
       inventory: { joker: 0, fifty: 0, time: 0, shield: 0 },
       buddies: ["kid"],
       buddy: "kid",
+      learning: normalizeLearning(),
     };
     storageSet(STORAGE_KEYS.progress, state.progress);
     refreshMenuStats();
@@ -3263,12 +3643,23 @@ function startApp() {
         checkAnswer();
         break;
       case "pause":
+        if (!els.pauseOverlay.hidden) break;
+        state.pausedRemaining = state.timerId
+          ? Math.max(0, (state.timerDeadline - Date.now()) / 1000)
+          : 0;
+        state.pausedAt = now();
+        window.clearTimeout(state.nextTaskId);
         stopTimer();
         els.pauseOverlay.hidden = false;
         break;
       case "resume":
         els.pauseOverlay.hidden = true;
-        if (state.run) restartTimer();
+        if (state.run) {
+          state.run.taskStart += now() - state.pausedAt;
+          if (activeTask) restartTimer(true);
+          else nextTask();
+          renderPowerups();
+        }
         break;
       case "quit":
         els.pauseOverlay.hidden = true;
@@ -3388,6 +3779,13 @@ if (typeof module !== "undefined" && module.exports) {
     generateAddition: generateAddition,
     generateSubtraction: generateSubtraction,
     generateMultiplication: generateMultiplication,
+    generateDivision: generateDivision,
+    createRoundModes: createRoundModes,
+    normalizeLearning: normalizeLearning,
+    updateLearning: updateLearning,
+    validateAnswer: validateAnswer,
+    answerRange: answerRange,
+    buildSolution: buildSolution,
     generateTask: generateTask,
     validateTask: validateTask,
     buildHint: buildHint,

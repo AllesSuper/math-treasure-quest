@@ -860,8 +860,8 @@ h3 {
   padding: var(--space);
   backdrop-filter: blur(3px);
 }
-.overlay[hidden] {
-  display: none;
+[hidden] {
+  display: none !important;
 }
 .overlay-card {
   max-width: 420px;
