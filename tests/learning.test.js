@@ -18,9 +18,15 @@ Math.random = () => {
   return seed / 4294967296;
 };
 try {
-  const seen = new Set();
-  const divisionExamples = new Set();
+  const multiplicationByLevel = new Map();
+  const divisionByLevel = new Map();
   for (let level = 1; level <= 5; level += 0.125) {
+    multiplicationByLevel.set(level, new Set());
+    divisionByLevel.set(level, new Set());
+    check(
+      Number.isInteger(app.choiceCountForLevel(level)),
+      "integer choices at fractional level",
+    );
     for (const mode of ["add", "sub", "mul", "div"]) {
       for (let i = 0; i < 2000; i++) {
         const q = app.generateTask(mode, level);
@@ -43,22 +49,25 @@ try {
             "timer bounds",
           );
         }
-        if (mode === "mul" && level === 5) seen.add(q.operands.join("x"));
-        if (mode === "div" && level === 5)
-          divisionExamples.add(q.operands.join(":"));
-        if (mode === "div" && level === 1)
-          check(q.operands[0] <= 20, "easy division");
+        if (mode === "mul")
+          multiplicationByLevel.get(level).add(q.operands.join("x"));
+        if (mode === "div")
+          divisionByLevel.get(level).add(q.operands.join(":"));
         if (level === 1 && (mode === "add" || mode === "sub"))
           check(q.operands[0] <= 20 && q.answer <= 20, "easy arithmetic");
       }
     }
   }
-  check(seen.size === 81, "all 81 ordered factor combinations generated");
-  for (const example of ["81:9", "100:5", "72:8", "3:1", "100:1"])
+  for (const [level, seen] of multiplicationByLevel)
+    check(seen.size === 100, "all 100 products available at level " + level);
+  for (const [level, seen] of divisionByLevel) {
     check(
-      divisionExamples.has(example),
-      "expanded division generated: " + example,
+      seen.size === 100,
+      "all 100 inverse facts available at level " + level,
     );
+    for (const example of ["64:8", "72:9", "56:7", "54:9", "100:10", "3:1"])
+      check(seen.has(example), "division available immediately: " + example);
+  }
   for (const total of [10, 25]) {
     for (let i = 0; i < 1000; i++) {
       const plan = app.createRoundModes("mix", total);
@@ -86,14 +95,15 @@ const edges = [
   task("sub", [100, 100], 0),
   task("sub", [100, 0], 100),
   task("mul", [2, 2], 4),
+  task("mul", [1, 1], 1),
   task("mul", [10, 10], 100),
   task("div", [100, 10], 10),
   task("div", [2, 2], 1),
   task("div", [81, 9], 9),
-  task("div", [100, 5], 20),
+  task("div", [64, 8], 8),
   task("div", [72, 8], 9),
   task("div", [3, 1], 3),
-  task("div", [100, 1], 100),
+  task("div", [54, 9], 6),
 ];
 for (const q of edges) check(app.validateTask(q), "valid boundary");
 for (const q of [
@@ -107,7 +117,7 @@ for (const q of [
   task("sub", [3, 5], -2),
   task("sub", [5, -1], 6),
   task("sub", [5, 1, 0], 4),
-  task("mul", [1, 2], 2),
+  task("mul", [-1, 2], -2),
   task("mul", [2, 11], 22),
   task("mul", [0, 3], 0),
   task("div", [8, 0], Infinity),
@@ -115,6 +125,8 @@ for (const q of [
   task("div", [9, 2], 4),
   task("div", [101, 10], 10),
   task("div", [101, 1], 101),
+  task("div", [100, 5], 20),
+  task("div", [100, 1], 100),
   task("div", [22, 11], 2),
   task("div", [0, 2], 0),
   task("div", [12, 2.5], 4),
@@ -126,7 +138,8 @@ for (const q of [
 for (const value of [-1, 101, NaN, Infinity, "10", 2.5])
   check(!app.validateAnswer(edges[0], value), "reject invalid input");
 check(
-  !app.validateAnswer(edges[6], 0) && !app.validateAnswer(edges[6], 101),
+  !app.validateAnswer(task("div", [100, 10], 10), 0) &&
+    !app.validateAnswer(task("div", [100, 10], 10), 11),
   "division input bounds",
 );
 check(
@@ -153,8 +166,8 @@ for (const [easy, hard] of [
 }
 let learning = app.normalizeLearning();
 check(
-  Object.values(learning).every((r) => r.level === 1),
-  "new child starts easy in every mode",
+  Object.values(learning).every((r) => r.level === 1.5),
+  "new child starts slightly higher in every mode",
 );
 const untouched = JSON.stringify(learning.div);
 for (let i = 0; i < 128; i++) {
@@ -183,9 +196,38 @@ for (let i = 0; i < 100; i++)
 check(learning.mul.level === 1, "lower bound");
 check(
   app.normalizeLearning({ add: { level: NaN, avgMs: -100, successes: 500 } })
-    .add.level === 1,
+    .add.level === 1.5,
   "invalid learning recovery",
 );
+const oldProgress = {
+  stars: 8,
+  coins: 17,
+  unknown: "keep",
+  learning: { add: { level: 1 }, sub: { level: 4 } },
+};
+const migrated = app.migrateLearningStart(oldProgress);
+check(
+  migrated.learning.add.level === 1.5 && migrated.learning.sub.level === 4,
+  "raise old low starts, preserve stronger learning",
+);
+check(
+  migrated.stars === 8 && migrated.coins === 17 && migrated.unknown === "keep",
+  "migration retains rewards and unknown fields",
+);
+check(oldProgress.learning.add.level === 1, "migration does not mutate source");
+migrated.learning.add.level = 1.125;
+check(
+  app.migrateLearningStart(migrated).learning.add.level === 1.125,
+  "later easing survives reload",
+);
+for (let dividend = 1; dividend <= 100; dividend++)
+  for (let divisor = 1; divisor <= 10; divisor++) {
+    const q = task("div", [dividend, divisor], dividend / divisor);
+    check(
+      app.validateTask(q) === (dividend % divisor === 0 && q.answer <= 10),
+      "exhaustive division bounds",
+    );
+  }
 for (const lang of app.LANGUAGES)
   for (const key of ["m_div", "m_div_desc", "milestone", "division_because"])
     check(typeof app.I18N[lang.code][key] === "string", "new localized text");

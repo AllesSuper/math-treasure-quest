@@ -115,6 +115,10 @@ const server = http.createServer((request, response) => {
       "unknown progress retained",
     );
     check((await saved()).learning.div.level === 3, "learning retained");
+    check(
+      (await saved()).learning.add.level === 1.5,
+      "raised initial adaptive level",
+    );
     await page.locator('#screen-menu [data-action="go-settings"]').click();
     check(
       !(await page.locator("#toggle-timer").isChecked()) &&
@@ -270,6 +274,25 @@ const server = http.createServer((request, response) => {
       "old badge retained",
     );
     await page.locator('#screen-summary [data-action="go-menu"]').click();
+    for (const factor of [1, 10]) {
+      await page.evaluate((value) => {
+        window.originalTestRandom = Math.random;
+        Math.random = () => (value === 1 ? 0 : 0.99999);
+      }, factor);
+      await start("mul", true, "adaptive");
+      const initialProduct = await current();
+      check(
+        initialProduct.numbers.every((n) => n === factor) &&
+          initialProduct.answer === factor * factor,
+        "adaptive immediately permits " + factor + " × " + factor,
+      );
+      await page.evaluate(() => {
+        Math.random = window.originalTestRandom;
+        delete window.originalTestRandom;
+      });
+      await solve();
+      await quit();
+    }
     await start("div", false, "hard");
     for (let i = 0; i < 4; i++) await solve();
     const q = await current();
@@ -496,7 +519,7 @@ const server = http.createServer((request, response) => {
     check(
       reset.coins === 0 &&
         reset.stars === 0 &&
-        Object.values(reset.learning).every((r) => r.level === 1),
+        Object.values(reset.learning).every((r) => r.level === 1.5),
       "explicit reset clears learning and rewards",
     );
     await fresh.close();

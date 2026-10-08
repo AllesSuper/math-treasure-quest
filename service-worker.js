@@ -5,7 +5,7 @@
  */
 
 // Bump this version whenever cached assets change to invalidate old caches.
-const CACHE_VERSION = "mathe-schatzreise-v4";
+const CACHE_VERSION = "mathe-schatzreise-v5";
 
 // All files required for the app to run fully offline.
 const PRECACHE_URLS = [

@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Updated table ranges
+
+- All 100 multiplication pairs from 1×1 to 10×10 are available immediately at
+  every difficulty, including Adaptive. Division uses divisor and quotient 1–10,
+  with 100 ÷ 10 as its maximum task.
+- Starting level raised to 1.5 (addition/subtraction up to 30). A one-time local
+  migration raises older low starts while keeping higher progress and later easing.
+- Fractional adaptive levels now always select an integer answer-button count.
+- Regression tests cover all 100 multiplication and division facts at every
+  adaptive step, first-task 1×1/10×10, migration and cache update to v5.
+
 ### Added
 
 - Expanded exact division: dividend up to 100, divisors 1–10 and quotients

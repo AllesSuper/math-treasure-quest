@@ -58,14 +58,14 @@ levels.forEach(function (level) {
   }
 });
 
-section("Multiplication stays within range (2..10 x 2..10)");
+section("Multiplication stays within range (1..10 x 1..10)");
 levels.forEach(function (level) {
   for (var i = 0; i < ITERATIONS; i++) {
     var task = app.generateMultiplication(level);
     var f1 = task.operands[0];
     var f2 = task.operands[1];
-    assert(f1 >= 2 && f1 <= 10, "first factor within 2..10");
-    assert(f2 >= 2 && f2 <= 10, "second factor within 2..10");
+    assert(f1 >= 1 && f1 <= 10, "first factor within 1..10");
+    assert(f2 >= 1 && f2 <= 10, "second factor within 1..10");
     assert(f1 * f2 === task.answer, "multiplication answer is correct");
     assert(app.validateTask(task), "multiplication passes validateTask");
   }

@@ -1,5 +1,8 @@
 # Prüfbericht: erweiterte Division und Countdown
 
+Historischer Bericht der vorigen Erweiterung. Die anschließend angepassten
+Tabellenbereiche und Startlevel stehen in [TABLES_REPORT.md](TABLES_REPORT.md).
+
 Stand: 8. Oktober 2026. Ausgangsversion der Ergänzung: `da96757`.
 Diese Ergänzung ersetzt die Divisionsgrenzen und Timeranzeige aus dem ersten
 [Testbericht](TEST_REPORT.md); alle übrigen Regeln und Spielfunktionen bleiben erhalten.

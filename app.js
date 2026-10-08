@@ -1287,6 +1287,7 @@ function clamp(value, min, max) {
 // Difficulty levels run from 1 (easiest) to 5 (hardest).
 var MIN_LEVEL = 1;
 var MAX_LEVEL = 5;
+var START_LEVEL = 1.5;
 
 /*
  * Addition with 2 or 3 numbers, each between 0 and 100, and a sum that never
@@ -1337,13 +1338,11 @@ function generateSubtraction(level) {
 }
 
 /*
- * Multiplication with factors 2..10; introduce larger factors gradually.
+ * The complete 1..10 times tables are available from the very first task.
  */
 function generateMultiplication(level) {
-  level = clamp(level || 1, MIN_LEVEL, MAX_LEVEL);
-  var maxFactor = Math.floor(4 + (level - 1) * 1.5);
-  var a = randInt(2, maxFactor);
-  var b = randInt(2, maxFactor);
+  var a = randInt(1, 10);
+  var b = randInt(1, 10);
   return {
     type: "mul",
     operands: [a, b],
@@ -1354,11 +1353,8 @@ function generateMultiplication(level) {
 
 // Generate exact division using a divisor and quotient, never a remainder.
 function generateDivision(level) {
-  level = clamp(level || 1, MIN_LEVEL, MAX_LEVEL);
-  var maxFactor = Math.floor(4 + (level - 1) * 1.5);
-  var maxDividend = Math.round(20 + (level - 1) * 20);
-  var divisor = randInt(1, maxFactor);
-  var quotient = randInt(1, Math.floor(maxDividend / divisor));
+  var divisor = randInt(1, 10);
+  var quotient = randInt(1, 10);
   var dividend = divisor * quotient;
   return {
     type: "div",
@@ -1437,7 +1433,7 @@ function validateTask(task) {
     var f1 = task.operands[0];
     var f2 = task.operands[1];
     return (
-      f1 >= 2 && f1 <= 10 && f2 >= 2 && f2 <= 10 && f1 * f2 === task.answer
+      f1 >= 1 && f1 <= 10 && f2 >= 1 && f2 <= 10 && f1 * f2 === task.answer
     );
   }
   if (task.type === "div") {
@@ -1449,7 +1445,7 @@ function validateTask(task) {
       divisor >= 1 &&
       divisor <= 10 &&
       task.answer >= 1 &&
-      task.answer <= 100 &&
+      task.answer <= 10 &&
       dividend % divisor === 0 &&
       dividend / divisor === task.answer
     );
@@ -1577,7 +1573,7 @@ function generateChoices(task, count) {
 // Number of answer choices for a level: 4 (easy) up to 6 (hard).
 function choiceCountForLevel(level) {
   level = clamp(level || 1, MIN_LEVEL, MAX_LEVEL);
-  return clamp(3 + level, 4, 6);
+  return clamp(Math.floor(3 + level), 4, 6);
 }
 
 /*
@@ -1592,7 +1588,7 @@ function computeTimeBudget(avgMs, level, task) {
     var b = task.operands[1];
     var pace = clamp((avgMs || 0) / 1000 - 8, 0, 4);
     if (task.type === "mul")
-      return clamp(Math.round(6 + (14 * (a + b - 4)) / 16 + pace), 6, 20);
+      return clamp(Math.round(6 + (14 * (a + b - 2)) / 18 + pace), 6, 20);
     if (task.type === "div") {
       var divisionDifficulty =
         b === 1 ? 0 : (0.65 * (a - 1)) / 99 + (0.35 * (b - 1)) / 9;
@@ -1629,9 +1625,9 @@ function updateAvgMs(prevAvg, sampleMs) {
 
 function answerRange(task) {
   return task.type === "div"
-    ? { min: 1, max: 100 }
+    ? { min: 1, max: 10 }
     : task.type === "mul"
-      ? { min: 4, max: 100 }
+      ? { min: 1, max: 100 }
       : { min: 0, max: 100 };
 }
 
@@ -1647,7 +1643,7 @@ function normalizeLearning(saved) {
   MATH_MODES.forEach(function (mode) {
     var old = (saved && saved[mode]) || {};
     records[mode] = {
-      level: Number.isFinite(old.level) ? clamp(old.level, 1, 5) : 1,
+      level: Number.isFinite(old.level) ? clamp(old.level, 1, 5) : START_LEVEL,
       successes: Number.isInteger(old.successes)
         ? clamp(old.successes, 0, 3)
         : 0,
@@ -1657,6 +1653,22 @@ function normalizeLearning(saved) {
     };
   });
   return records;
+}
+
+// Lift older low starts once, but retain higher progress and later easing.
+function migrateLearningStart(progress) {
+  var next = Object.assign({}, progress);
+  next.learning = normalizeLearning(next.learning);
+  if (next.learningStartVersion !== 1) {
+    MATH_MODES.forEach(function (mode) {
+      next.learning[mode].level = Math.max(
+        START_LEVEL,
+        next.learning[mode].level,
+      );
+    });
+    next.learningStartVersion = 1;
+  }
+  return next;
 }
 
 // Four independent successes raise the rating by just one eighth of a level.
@@ -2230,7 +2242,8 @@ function startApp() {
     timerId: null,
   };
 
-  state.progress.learning = normalizeLearning(state.progress.learning);
+  state.progress = migrateLearningStart(state.progress);
+  storageSet(STORAGE_KEYS.progress, state.progress);
 
   /* ---------------- i18n ---------------- */
   function t(key, vars) {
@@ -2477,7 +2490,12 @@ function startApp() {
   }
 
   /* ---------------- Adventure run ---------------- */
-  var DIFF_START_LEVEL = { easy: 1, medium: 3, hard: 5, adaptive: 1 };
+  var DIFF_START_LEVEL = {
+    easy: START_LEVEL,
+    medium: 3,
+    hard: 5,
+    adaptive: START_LEVEL,
+  };
 
   function startRun() {
     stopTimer();
@@ -2487,7 +2505,7 @@ function startApp() {
     state.run = {
       mode: state.selectedMode,
       diff: state.selectedDiff,
-      level: DIFF_START_LEVEL[state.selectedDiff] || 1,
+      level: DIFF_START_LEVEL[state.selectedDiff] || START_LEVEL,
       modes: createRoundModes(state.selectedMode, total),
       milestones: [],
       index: 0,
@@ -3616,6 +3634,7 @@ function startApp() {
       buddies: ["kid"],
       buddy: "kid",
       learning: normalizeLearning(),
+      learningStartVersion: 1,
     };
     storageSet(STORAGE_KEYS.progress, state.progress);
     refreshMenuStats();
@@ -3785,6 +3804,8 @@ if (typeof module !== "undefined" && module.exports) {
     generateDivision: generateDivision,
     createRoundModes: createRoundModes,
     normalizeLearning: normalizeLearning,
+    migrateLearningStart: migrateLearningStart,
+    START_LEVEL: START_LEVEL,
     updateLearning: updateLearning,
     validateAnswer: validateAnswer,
     answerRange: answerRange,

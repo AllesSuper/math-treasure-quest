@@ -36,8 +36,9 @@ Please keep these in mind for any change:
 4. **Accessible and touch-first.** Large targets, high contrast, keyboard
    support, `prefers-reduced-motion` respected.
 5. **Math stays in range.** Addition sums ≤ 100, subtraction never negative in
-   normal play, multiplication with both factors 2–10, division with dividend
-   ≤100, divisor 1–10 and integer quotient 1–100 (no remainder).
+   normal play, multiplication with both factors 1–10, division with dividend
+   ≤100, divisor 1–10 and integer quotient 1–10 (no remainder). Full times tables
+   must be available immediately, including Adaptive mode; the new start is 1.5.
 6. **German is the fallback language.** Missing translation keys must fall back
    to German.
 
