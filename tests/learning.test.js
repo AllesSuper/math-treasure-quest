@@ -19,6 +19,7 @@ Math.random = () => {
 };
 try {
   const seen = new Set();
+  const divisionExamples = new Set();
   for (let level = 1; level <= 5; level += 0.125) {
     for (const mode of ["add", "sub", "mul", "div"]) {
       for (let i = 0; i < 2000; i++) {
@@ -43,12 +44,21 @@ try {
           );
         }
         if (mode === "mul" && level === 5) seen.add(q.operands.join("x"));
+        if (mode === "div" && level === 5)
+          divisionExamples.add(q.operands.join(":"));
+        if (mode === "div" && level === 1)
+          check(q.operands[0] <= 20, "easy division");
         if (level === 1 && (mode === "add" || mode === "sub"))
           check(q.operands[0] <= 20 && q.answer <= 20, "easy arithmetic");
       }
     }
   }
   check(seen.size === 81, "all 81 ordered factor combinations generated");
+  for (const example of ["81:9", "100:5", "72:8", "3:1", "100:1"])
+    check(
+      divisionExamples.has(example),
+      "expanded division generated: " + example,
+    );
   for (const total of [10, 25]) {
     for (let i = 0; i < 1000; i++) {
       const plan = app.createRoundModes("mix", total);
@@ -79,6 +89,11 @@ const edges = [
   task("mul", [10, 10], 100),
   task("div", [100, 10], 10),
   task("div", [2, 2], 1),
+  task("div", [81, 9], 9),
+  task("div", [100, 5], 20),
+  task("div", [72, 8], 9),
+  task("div", [3, 1], 3),
+  task("div", [100, 1], 100),
 ];
 for (const q of edges) check(app.validateTask(q), "valid boundary");
 for (const q of [
@@ -99,8 +114,8 @@ for (const q of [
   task("div", [9, 2], 4.5),
   task("div", [9, 2], 4),
   task("div", [101, 10], 10),
-  task("div", [11, 1], 11),
-  task("div", [22, 2], 11),
+  task("div", [101, 1], 101),
+  task("div", [22, 11], 2),
   task("div", [0, 2], 0),
   task("div", [12, 2.5], 4),
   task("div", [100, 10], 9),
@@ -111,7 +126,7 @@ for (const q of [
 for (const value of [-1, 101, NaN, Infinity, "10", 2.5])
   check(!app.validateAnswer(edges[0], value), "reject invalid input");
 check(
-  !app.validateAnswer(edges[6], 0) && !app.validateAnswer(edges[6], 11),
+  !app.validateAnswer(edges[6], 0) && !app.validateAnswer(edges[6], 101),
   "division input bounds",
 );
 check(

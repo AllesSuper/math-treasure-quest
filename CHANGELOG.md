@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Expanded exact division: dividend up to 100, divisors 1–10 and quotients
+  1–100, including 100 ÷ 5 = 20 and 3 ÷ 1 = 3.
+- Visible countdown in the top bar and task ring in every math mode when
+  Timer mode is enabled in the start menu; PWA cache refreshed to v4.
+
 - Third-grade division with exact quotients and inverse multiplication solutions.
 - Separate local learning records for all four operations, gentle adaptive steps,
   and translated milestone praise in all 16 languages.

@@ -41,7 +41,8 @@ const server = http.createServer((request, response) => {
 
 (async () => {
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
-  const url = "http://127.0.0.1:" + server.address().port;
+  const url =
+    process.env.TEST_BASE_URL || "http://127.0.0.1:" + server.address().port;
   const engine = process.env.TEST_BROWSER || "chromium";
   const browser = await { chromium, firefox, webkit }[engine].launch({
     headless: true,
@@ -214,6 +215,7 @@ const server = http.createServer((request, response) => {
       await start(mode, quick);
       check(
         !(await page.locator("#timer-ring").isVisible()) &&
+          !(await page.locator("#game-timer-chip").isVisible()) &&
           !(await page.locator("#blitz-tag").isVisible()),
         "untimed task hides all timer UI",
       );
@@ -321,6 +323,39 @@ const server = http.createServer((request, response) => {
       "joker does not inflate learning",
     );
     await quit();
+    for (const mode of ["add", "sub", "mul", "div", "mix"]) {
+      await start(mode, true, "adaptive", true);
+      await page.locator("#game-timer-chip").waitFor({ state: "visible" });
+      await page.locator("#timer-ring").waitFor({ state: "visible" });
+      check(
+        (await page.locator("#game-timer-chip").isVisible()) &&
+          (await page.locator("#timer-ring").isVisible()),
+        "countdown visible in " +
+          mode +
+          ": " +
+          (await page.evaluate(() =>
+            JSON.stringify({
+              chip: document.getElementById("game-timer-chip").outerHTML,
+              ringHidden: document.getElementById("timer-ring").hidden,
+              settings: JSON.parse(localStorage.getItem("ms_settings")),
+            }),
+          )),
+      );
+      const initial = Number(await page.locator("#game-timer").textContent());
+      await page.clock.runFor(1100);
+      const remaining = Number(await page.locator("#game-timer").textContent());
+      check(
+        remaining < initial &&
+          remaining === Number(await page.locator("#timer-num").textContent()),
+        "countdown ticks in " + mode,
+      );
+      await solve();
+      check(
+        await page.locator("#game-timer-chip").isVisible(),
+        "countdown on next task in " + mode,
+      );
+      await quit();
+    }
     await start("div", false, "hard", true);
     const divisionTime = Number(await page.locator("#timer-num").textContent());
     check(divisionTime >= 10 && divisionTime <= 30, "actual division timer");

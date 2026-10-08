@@ -37,7 +37,7 @@ Please keep these in mind for any change:
    support, `prefers-reduced-motion` respected.
 5. **Math stays in range.** Addition sums ≤ 100, subtraction never negative in
    normal play, multiplication with both factors 2–10, division with dividend
-   ≤100, divisor 2–10 and integer quotient 1–10 (no remainder).
+   ≤100, divisor 1–10 and integer quotient 1–100 (no remainder).
 6. **German is the fallback language.** Missing translation keys must fall back
    to German.
 

@@ -1,5 +1,8 @@
 # Prüfbericht: Mathe-Schatzreise, 3. Klasse
 
+Dieser Bericht dokumentiert die erste Umsetzung. Für den anschließend erweiterten
+Divisionsbereich und die sichtbare Timeranzeige gilt [UPDATE_REPORT.md](UPDATE_REPORT.md).
+
 Datum: 8. Oktober 2026. Grundlage: aktuelle Originalversion
 `fa4f0731adb3bbeb1dd722a17168c328b6f678dc` von `AllesSuper/math-treasure-quest`.
 Das Repository wurde frisch geklont; die Änderungen liegen auf einem eigenen

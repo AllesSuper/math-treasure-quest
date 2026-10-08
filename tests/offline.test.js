@@ -24,7 +24,7 @@ const vm = require("node:vm");
   let deleted;
   const caches = {
     open: async () => cache,
-    keys: async () => ["mathe-schatzreise-v2", "mathe-schatzreise-v3"],
+    keys: async () => ["mathe-schatzreise-v3", "mathe-schatzreise-v4"],
     delete: async (key) => {
       deleted = key;
     },
@@ -77,7 +77,7 @@ const vm = require("node:vm");
     },
   });
   await pending;
-  assert.equal(deleted, "mathe-schatzreise-v2");
+  assert.equal(deleted, "mathe-schatzreise-v3");
   assert.ok(claimed);
   let response;
   const request = {

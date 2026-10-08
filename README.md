@@ -21,7 +21,7 @@ A fun and educational treasure-hunting adventure that helps children practice ma
 - ➕ Addition (0–100)
 - ➖ Subtraction (0–100)
 - ✖️ Multiplication (2×2 to 10×10; all 81 factor pairs)
-- ➗ Exact division (dividend ≤100, divisor 2–10, quotient 1–10)
+- ➗ Exact division (dividend ≤100, divisor 1–10, quotient 1–100)
 - 🗺️ Adventure-based progression system
 - 💎 Unique treasure reward at the end of each journey
 - 🌍 Multiple languages
@@ -175,13 +175,13 @@ It is a gift to families, classrooms, and the open-source community.
 
 ## 🧮 Supported math modes
 
-| Mode              | Range                                      | Notes                                    |
-| ----------------- | ------------------------------------------ | ---------------------------------------- |
-| ➕ Addition       | 2 or 3 numbers, each 0–100, sum ≤ 100      | Sums never exceed 100.                   |
-| ➖ Subtraction    | 0–100                                      | Result is never negative in normal play. |
-| ✖️ Multiplication | 2×2 up to 10×10                            | Both factors 2–10; all 81 pairs.         |
-| ➗ Division       | Dividend ≤100, divisor 2–10, quotient 1–10 | Whole numbers, no remainder.             |
-| 🌈 Mixed          | All four operations                        | Station counts differ by at most one.    |
+| Mode              | Range                                       | Notes                                    |
+| ----------------- | ------------------------------------------- | ---------------------------------------- |
+| ➕ Addition       | 2 or 3 numbers, each 0–100, sum ≤ 100       | Sums never exceed 100.                   |
+| ➖ Subtraction    | 0–100                                       | Result is never negative in normal play. |
+| ✖️ Multiplication | 2×2 up to 10×10                             | Both factors 2–10; all 81 pairs.         |
+| ➗ Division       | Dividend ≤100, divisor 1–10, quotient 1–100 | Whole numbers, no remainder.             |
+| 🌈 Mixed          | All four operations                         | Station counts differ by at most one.    |
 
 ### Learning at the start of third grade
 
@@ -191,6 +191,11 @@ New learners start with sums and starting numbers up to 20 and small factors
 rating by 0.125 (levels 1–5); a mistake or timeout reduces it by 0.125 and clears
 the success counter. A Joker does not increase learning. Existing coins, stars,
 badges, treasure collections, companions and settings are retained.
+
+Exact division also includes 81 ÷ 9, 100 ÷ 5 = 20, 72 ÷ 8 and 3 ÷ 1.
+The dividend grows gradually from 20 to 100. When Timer mode is enabled in
+the start menu, every operation displays the running countdown both in the
+task ring and in the top bar.
 
 Timers and Blitz tasks default to off for new installations; existing choices
 are respected. Each concrete task determines its starting time: multiplication

@@ -1128,112 +1128,112 @@ var I18N = {
 var LEARNING_TEXT = {
   de: [
     "Geteilt-Rechnen",
-    "Teile ohne Rest: bis 100 durch 2 bis 10.",
+    "Teile ohne Rest: bis 100 durch 1 bis 10.",
     "Alle vier Rechenarten ausgewogen gemischt.",
     "Schon {n} Aufgaben geschafft! Weiter so!",
     "denn",
   ],
   en: [
     "Division",
-    "Divide exactly: up to 100 by 2 to 10.",
+    "Divide exactly: up to 100 by 1 to 10.",
     "A balanced mix of all four operations.",
     "You solved {n} tasks! Keep going!",
     "because",
   ],
   es: [
     "División",
-    "Divide sin resto: hasta 100 entre 2 y 10.",
+    "Divide sin resto: hasta 100 entre 1 y 10.",
     "Las cuatro operaciones equilibradas.",
     "¡Ya resolviste {n} tareas! ¡Sigue así!",
     "porque",
   ],
   fr: [
     "Divisions",
-    "Divise sans reste : jusqu’à 100 par 2 à 10.",
+    "Divise sans reste : jusqu’à 100 par 1 à 10.",
     "Les quatre opérations bien réparties.",
     "Déjà {n} calculs réussis ! Continue !",
     "car",
   ],
   it: [
     "Divisioni",
-    "Dividi senza resto: fino a 100 per 2–10.",
+    "Dividi senza resto: fino a 100 per 1–10.",
     "Le quattro operazioni in equilibrio.",
     "Hai risolto {n} calcoli! Continua così!",
     "perché",
   ],
   pt: [
     "Divisão",
-    "Divide sem resto: até 100 por 2 a 10.",
+    "Divide sem resto: até 100 por 1 a 10.",
     "As quatro operações equilibradas.",
     "Já resolveste {n} tarefas! Continua!",
     "porque",
   ],
   nl: [
     "Delen",
-    "Deel zonder rest: tot 100 door 2 tot 10.",
+    "Deel zonder rest: tot 100 door 1 tot 10.",
     "Alle vier bewerkingen evenwichtig gemengd.",
     "Al {n} sommen opgelost! Ga zo door!",
     "want",
   ],
   pl: [
     "Dzielenie",
-    "Dziel bez reszty: do 100 przez 2–10.",
+    "Dziel bez reszty: do 100 przez 1–10.",
     "Wszystkie cztery działania w równowadze.",
     "Już {n} zadań rozwiązanych! Tak trzymaj!",
     "ponieważ",
   ],
   uk: [
     "Ділення",
-    "Діли без остачі: до 100 на числа 2–10.",
+    "Діли без остачі: до 100 на числа 1–10.",
     "Рівномірна суміш чотирьох дій.",
     "Уже {n} завдань розв’язано! Так тримати!",
     "тому що",
   ],
   ru: [
     "Деление",
-    "Дели без остатка: до 100 на числа 2–10.",
+    "Дели без остатка: до 100 на числа 1–10.",
     "Все четыре действия поровну.",
     "Уже {n} заданий решено! Продолжай!",
     "потому что",
   ],
   tr: [
     "Bölme",
-    "Kalansız böl: 100’e kadar, bölen 2–10.",
+    "Kalansız böl: 100’e kadar, bölen 1–10.",
     "Dört işlem dengeli bir karışımda.",
     "{n} soru çözdün! Devam et!",
     "çünkü",
   ],
   ar: [
     "القسمة",
-    "قسمة دون باقٍ: حتى 100 على 2 إلى 10.",
+    "قسمة دون باقٍ: حتى 100 على 1 إلى 10.",
     "مزيج متوازن من العمليات الأربع.",
     "حللت {n} مسائل! واصل!",
     "لأن",
   ],
   hi: [
     "भाग",
-    "बिना शेष भाग: 100 तक, भाजक 2 से 10।",
+    "बिना शेष भाग: 100 तक, भाजक 1 से 10।",
     "चारों संक्रियाओं का संतुलित मिश्रण।",
     "तुमने {n} प्रश्न हल किए! आगे बढ़ो!",
     "क्योंकि",
   ],
   zh: [
     "除法",
-    "整除：100以内，除数为2至10。",
+    "整除：100以内，除数为1至10。",
     "均衡练习四种运算。",
     "已完成{n}道题！继续加油！",
     "因为",
   ],
   ja: [
     "割り算",
-    "余りなし：100まで、割る数は2から10。",
+    "余りなし：100まで、割る数は1から10。",
     "4種類の計算をバランスよく。",
     "{n}問できたね！その調子！",
     "なぜなら",
   ],
   ko: [
     "나눗셈",
-    "나머지 없이: 100까지, 나누는 수는 2–10.",
+    "나머지 없이: 100까지, 나누는 수는 1–10.",
     "네 가지 연산을 골고루 연습해요.",
     "벌써 {n}문제 해결! 계속해요!",
     "왜냐하면",
@@ -1356,8 +1356,9 @@ function generateMultiplication(level) {
 function generateDivision(level) {
   level = clamp(level || 1, MIN_LEVEL, MAX_LEVEL);
   var maxFactor = Math.floor(4 + (level - 1) * 1.5);
-  var divisor = randInt(2, maxFactor);
-  var quotient = randInt(1, maxFactor);
+  var maxDividend = Math.round(20 + (level - 1) * 20);
+  var divisor = randInt(1, maxFactor);
+  var quotient = randInt(1, Math.floor(maxDividend / divisor));
   var dividend = divisor * quotient;
   return {
     type: "div",
@@ -1445,10 +1446,10 @@ function validateTask(task) {
     return (
       dividend >= 1 &&
       dividend <= 100 &&
-      divisor >= 2 &&
+      divisor >= 1 &&
       divisor <= 10 &&
       task.answer >= 1 &&
-      task.answer <= 10 &&
+      task.answer <= 100 &&
       dividend % divisor === 0 &&
       dividend / divisor === task.answer
     );
@@ -1592,12 +1593,11 @@ function computeTimeBudget(avgMs, level, task) {
     var pace = clamp((avgMs || 0) / 1000 - 8, 0, 4);
     if (task.type === "mul")
       return clamp(Math.round(6 + (14 * (a + b - 4)) / 16 + pace), 6, 20);
-    if (task.type === "div")
-      return clamp(
-        Math.round(10 + (20 * (b + task.answer - 3)) / 17 + pace),
-        10,
-        30,
-      );
+    if (task.type === "div") {
+      var divisionDifficulty =
+        b === 1 ? 0 : (0.65 * (a - 1)) / 99 + (0.35 * (b - 1)) / 9;
+      return clamp(Math.round(10 + 20 * divisionDifficulty + pace), 10, 30);
+    }
     var magnitude = task.type === "add" ? task.answer : a;
     var crossing =
       task.type === "add" ? (a % 10) + (b % 10) >= 10 : a % 10 < b % 10;
@@ -1629,7 +1629,7 @@ function updateAvgMs(prevAvg, sampleMs) {
 
 function answerRange(task) {
   return task.type === "div"
-    ? { min: 1, max: 10 }
+    ? { min: 1, max: 100 }
     : task.type === "mul"
       ? { min: 4, max: 100 }
       : { min: 0, max: 100 };
@@ -2960,7 +2960,7 @@ function startApp() {
     stopTimer();
     state.timerRemaining = 0;
     if (!activeTask || !activeTask.timed) {
-      if (els.timerRing) els.timerRing.hidden = true;
+      if (els.timerRing) els.timerRing.setAttribute("hidden", "");
       return;
     }
     if (state.awaitingNext) return;
@@ -2973,8 +2973,9 @@ function startApp() {
         );
     state.timerBudget = budget;
     state.timerRemaining = budget;
+    if (els.gameTimerChip) els.gameTimerChip.hidden = false;
     if (els.timerRing) {
-      els.timerRing.hidden = false;
+      els.timerRing.removeAttribute("hidden");
       els.timerRing.classList.remove("is-low");
     }
     updateTimerRing(state.timerBudget, state.timerBudget);
@@ -2990,6 +2991,7 @@ function startApp() {
     }, 100);
   }
   function updateTimerRing(remaining, budget) {
+    if (els.gameTimer) els.gameTimer.textContent = String(Math.ceil(remaining));
     if (els.timerNum) els.timerNum.textContent = String(Math.ceil(remaining));
     if (els.timerArc && els.timerRing) {
       var frac = budget > 0 ? clamp(remaining / budget, 0, 1) : 0;
@@ -3022,7 +3024,8 @@ function startApp() {
       window.clearInterval(state.timerId);
       state.timerId = null;
     }
-    if (els.timerRing) els.timerRing.hidden = true;
+    if (els.timerRing) els.timerRing.setAttribute("hidden", "");
+    if (els.gameTimerChip) els.gameTimerChip.hidden = true;
   }
 
   /* ---------------- Finish + rewards ---------------- */
